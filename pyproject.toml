@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "orchestration_engine"
+version = "0.1.0"
+description = ""
+authors = ["KennyVaneetvelde <kenny@inosta.be>"]
+readme = "README.md"
+packages = [{include = "orchestration_engine"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+atomic-agents = "^1.1.2"
+instructor = "^1.6.1"
+pydantic = ">=2.10.3,<3.0.0"
+sympy = "^1.13.3"
+python-dotenv = ">=1.0.1,<2.0.0"
+openai = ">=1.35.12,<2.0.0"
+beautifulsoup4 = "^4.12.0"
+markdownify = "^0.11.0"
+readability-lxml = "^0.8.0"
+requests = "^2.31.0"
+chromadb = "^0.4.0"
+numpy = ">=1.24.0,<2.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
