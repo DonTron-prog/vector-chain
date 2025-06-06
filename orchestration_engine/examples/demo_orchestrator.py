@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Demo script for testing the orchestrator with example scenarios.
-This file contains the example scenarios that were previously in orchestrator.py.
+Demo script for testing the investment research orchestrator with example scenarios.
+This file contains investment research query examples for testing the orchestrator.
 """
 
 import sys
@@ -19,15 +19,15 @@ def setup_environment_and_client(config):
     return client
 
 
-def process_single_alert(agent, tools, alert_data, console, generate_final_answer_flag=False, reset_memory=True):
-    """Process a single alert through the complete orchestration pipeline."""
+def process_single_query(agent, tools, query_data, console, generate_final_answer_flag=False, reset_memory=True):
+    """Process a single investment research query through the complete orchestration pipeline."""
     # Create tool manager and orchestrator core for enhanced functionality
     tool_manager = ToolManager(tools)
     orchestrator_core = OrchestratorCore(agent, tool_manager, console)
     
     # Use the new orchestrator core method
-    return orchestrator_core.process_single_alert(
-        alert_data=alert_data,
+    return orchestrator_core.process_single_query(
+        query_data=query_data,
         generate_final_answer_flag=generate_final_answer_flag,
         reset_memory=reset_memory,
         verbose=True
@@ -35,7 +35,7 @@ def process_single_alert(agent, tools, alert_data, console, generate_final_answe
 
 
 def run_example_scenarios(agent, tools, example_data, console, generate_final_answer_flag=False, reset_memory=True):
-    """Run through a list of example scenarios."""
+    """Run through a list of example investment research scenarios."""
     console.print(Panel(
         agent.system_prompt_generator.generate_prompt(),
         title="System Prompt",
@@ -43,11 +43,11 @@ def run_example_scenarios(agent, tools, example_data, console, generate_final_an
     ))
     console.print("\n")
     
-    for alert_input in example_data:
-        process_single_alert(
+    for query_input in example_data:
+        process_single_query(
             agent=agent,
             tools=tools,
-            alert_data=alert_input,
+            query_data=query_input,
             console=console,
             generate_final_answer_flag=generate_final_answer_flag,
             reset_memory=reset_memory
@@ -55,24 +55,24 @@ def run_example_scenarios(agent, tools, example_data, console, generate_final_an
 
 
 def main():
-    """Main execution flow for demo scenarios."""
-    # Define example scenarios
-    example_alerts = [
+    """Main execution flow for demo investment research scenarios."""
+    # Define example investment research queries
+    example_queries = [
         {
-            "alert": "Critical failure: 'ExtPluginReplicationError: Code 7749 - Sync Timeout with AlphaNode' in 'experimental-geo-sync-plugin v0.1.2' on db-primary.",
-            "context": "System: Primary PostgreSQL Database (Version 15.3). Plugin: 'experimental-geo-sync-plugin v0.1.2' (third-party, integrated yesterday for PoC). Service: Attempting geo-replicated read-replica setup. Internal Documentation: Confirmed NO internal documentation or runbooks exist for this experimental plugin or its error codes. Vendor documentation for v0.1.2 is sparse."
+            "query": "Analyze NVIDIA's competitive position in AI chips market including market share and technological advantages",
+            "context": "Focus on Q3 2024 earnings, compare with AMD and Intel, assess impact of new Blackwell architecture on competitive moat"
         },
         {
-            "alert": "Pod CrashLoopBackOff for service 'checkout-service' in Kubernetes cluster 'prod-east-1'. Error log snippet: 'java.lang.OutOfMemoryError: Java heap space'.",
-            "context": "System: Kubernetes microservice (Java Spring Boot). Service: Checkout processing. Resource limits: Memory 512Mi, CPU 0.5 core. Traffic: Experiencing 3x normal load due to flash sale."
+            "query": "Evaluate Tesla's valuation premium compared to traditional automakers",
+            "context": "Compare P/E ratios, growth prospects, and market positioning. Focus on autonomous driving capabilities and energy business contribution to justify premium"
         },
         {
-            "alert": "API endpoint /api/v2/orders returning 503 Service Unavailable for 5% of requests over the last 10 minutes. Latency P99 is 2500ms.",
-            "context": "System: API Gateway (Kong) and backend OrderService. Service: Order placement. Dependencies: InventoryService, PaymentService. Current error rate threshold: < 1%. Latency SLO: P99 < 800ms."
+            "query": "Research emerging risks in the semiconductor industry supply chain",
+            "context": "Analyze geopolitical tensions, China-Taiwan relations impact, and alternative supply chain strategies. Focus on companies with high Asia exposure"
         },
         {
-            "alert": "Unusual network traffic pattern detected: 'TLS handshake failures increased by 400% from external IPs in APAC region' affecting load balancer 'prod-lb-01'.",
-            "context": "System: Production Load Balancer (HAProxy 2.4). Service: Frontend traffic distribution. Recent changes: SSL certificate renewal completed 2 hours ago. Geographic pattern: 85% of failures from previously unseen IP ranges in Asia-Pacific. No internal documentation exists for this specific failure pattern or geographic correlation analysis."
+            "query": "Assess Apple's iPhone market share trends and competitive threats",
+            "context": "Focus on Q4 2024 earnings, compare with Samsung and emerging Chinese brands. Analyze impact of AI features on upgrade cycles"
         }
     ]
     
@@ -93,7 +93,7 @@ def main():
     run_example_scenarios(
         agent=agent,
         tools=tool_instances,
-        example_data=example_alerts,
+        example_data=example_queries,
         console=console_instance,
         generate_final_answer_flag=True
     )

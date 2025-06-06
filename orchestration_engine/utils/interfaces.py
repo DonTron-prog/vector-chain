@@ -1,4 +1,5 @@
 """Interfaces and abstractions for planning agent compatibility."""
+"""This file serves as a bridge between planning agents and orchestrators"""
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any, Optional
