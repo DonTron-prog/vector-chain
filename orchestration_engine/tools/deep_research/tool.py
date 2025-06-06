@@ -48,6 +48,7 @@ class DeepResearchTool(BaseTool):
     4. Generating a comprehensive answer with follow-up questions
     """
     
+    # add attributes for input and output schemas
     input_schema = DeepResearchToolInputSchema
     output_schema = DeepResearchToolOutputSchema
     
@@ -184,7 +185,6 @@ class DeepResearchTool(BaseTool):
         research_query = input_data.research_query
         max_results = input_data.max_search_results
         
-        # Always perform initial search since orchestrator chose deep research
         # Generate search queries
         search_queries = self._generate_search_queries(research_query)
         

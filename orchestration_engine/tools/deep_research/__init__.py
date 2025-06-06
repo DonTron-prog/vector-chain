@@ -12,7 +12,6 @@ Main components:
 - DeepResearchToolConfig: Configuration for the tool
 - DeepResearchToolInputSchema: Input schema for research queries
 - DeepResearchToolOutputSchema: Output schema with research results
-- perform_deep_research: Standalone function for performing research
 """
 
 from .tool import (
@@ -21,13 +20,10 @@ from .tool import (
     DeepResearchToolInputSchema,
     DeepResearchToolOutputSchema,
 )
-from .utils import perform_deep_research, display_research_results
 
 __all__ = [
     "DeepResearchTool",
-    "DeepResearchToolConfig", 
+    "DeepResearchToolConfig",
     "DeepResearchToolInputSchema",
     "DeepResearchToolOutputSchema",
-    "perform_deep_research",
-    "display_research_results",
 ]

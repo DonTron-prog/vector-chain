@@ -14,6 +14,8 @@ from orchestration_engine.tools.deep_research import (
     DeepResearchTool,
     DeepResearchToolConfig,
     DeepResearchToolInputSchema,
+)
+from orchestration_engine.tools.deep_research.interactive import (
     perform_deep_research,
     display_research_results
 )
