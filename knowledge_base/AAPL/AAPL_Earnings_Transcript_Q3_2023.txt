@@ -1,0 +1,71 @@
+# Apple Inc. (AAPL) Q3 2023 Earnings Call Transcript (Synthetic Example)
+# Date: August 3, 2023
+
+**Executives:**
+
+*   Tejas Gala - Director of Investor Relations
+*   Tim Cook - Chief Executive Officer
+*   Luca Maestri - Chief Financial Officer
+
+**Analysts:**
+
+*   Erik Woodring - Morgan Stanley
+*   Mike Olson - Piper Sandler
+*   Shannon Cross - Credit Suisse
+*   David Vogt - UBS
+*   Amit Daryanani - Evercore ISI
+*   Wamsi Mohan - Bank of America
+*   Samik Chatterjee - JPMorgan
+
+---
+
+**Operator:** Good day, and welcome to the Apple Q3 Fiscal Year 2023 Earnings Conference Call. Today's call is being recorded. At this time, for opening remarks and introductions, I would like to turn the call over to Tejas Gala, Director of Investor Relations. Please go ahead.
+
+**Tejas Gala:** Thank you. Good afternoon, and thank you for joining us. Speaking first today is Apple's CEO, Tim Cook; and then he'll be followed by CFO, Luca Maestri. After that, we'll open the call to questions from analysts.
+
+Please note that some of the information you'll hear during our discussion today will consist of forward-looking statements, including, without limitation, those regarding revenue, gross margin, operating expenses, other income and expense, taxes, capital allocation, and future business outlook, including the potential impact of COVID-19 on the company's business and results of operations. These statements involve risks and uncertainties that may cause actual results or trends to differ materially from our forecast. For more information, please refer to the risk factors discussed in Apple's Form 10-K for 2022, the Form 10-Q for the second quarter of 2023, and the Form 10-Q for the third quarter of 2023 when filed with the SEC. Apple assumes no obligation to update any forward-looking statements or information, which speak as of their respective dates.
+
+I'll now turn the call over to Tim.
+
+**Tim Cook:** Thank you, Tejas. Good afternoon, everyone, and thanks for joining us. Today, Apple is reporting revenue of $81.8 billion for the June quarter, which was better than our expectations. We achieved an all-time revenue record in Services, driven by over 1 billion paid subscriptions. iPhone revenue came in ahead of our expectations, and the June quarter install base of active devices reached an all-time high in every geographic segment.
+
+We continue to manage our business prudently in a challenging macroeconomic environment. We are particularly pleased with the growth in emerging markets, with strong results in India, Indonesia, and Latin America. Our commitment to innovation is unwavering, and we are excited about the products and services we have in the pipeline. The launch of Vision Pro earlier this year marked the beginning of a new era of spatial computing, and we are thrilled by the developer and customer response.
+
+Our Services business continues to be a major growth engine. The breadth and quality of our services, from iCloud to Apple Music and Apple TV+, are resonating with customers around the world. We now have more than 1 billion paid subscriptions across the services on our platform, nearly double the number we had just three years ago.
+
+Sustainability remains a core value for Apple. We are making significant progress towards our goal of being carbon neutral across our entire supply chain and product life cycle by 2030.
+
+I'll now turn it over to Luca to go through the financials in more detail.
+
+**Luca Maestri:** Thank you, Tim. Good afternoon, everyone. Revenue for the June quarter was $81.8 billion, down 1% from a year ago. Foreign exchange had a negative impact of more than 400 basis points. Products revenue was $60.6 billion, down 4% year-over-year due to the challenging macroeconomic environment and tough compares for Mac and iPad. Services revenue set an all-time record of $21.2 billion, up 8% year-over-year.
+
+Company gross margin was 44.5%, up 130 basis points from last quarter, driven by cost savings and a favorable mix shift towards Services. Products gross margin was 35.4%, and Services gross margin was 70.8%. Operating expenses were $13.6 billion, in line with our expectations. Net income was $20.5 billion, and diluted earnings per share were $1.29, up 5% year-over-year.
+
+iPhone revenue was $39.7 billion. While this was down 2% year-over-year, we were pleased with the performance given the current environment, particularly the strong customer response to the iPhone 14 family. Mac revenue was $6.8 billion, and iPad revenue was $5.8 billion. Both were impacted by challenging compares from last year's product launches and macroeconomic headwinds. Wearables, Home and Accessories revenue was $8.3 billion, up 2% year-over-year, with strong performance from Apple Watch.
+
+Our installed base of active devices continues to grow and reached an all-time high for all major product categories and geographic segments. This growing installed base is a key driver for our Services business.
+
+Turning to cash, we ended the quarter with $166 billion in cash and marketable securities. We returned over $24 billion to shareholders during the quarter, including $3.8 billion in dividends and equivalents and $18 billion through open market repurchases of 106 million Apple shares.
+
+Looking ahead to the September quarter, we expect year-over-year revenue performance to be similar to the June quarter, assuming the macroeconomic outlook does not worsen from what we are projecting today. We expect gross margin to be in the range of 44% to 45%. We expect OpEx to be in the range of $13.7 billion to $13.9 billion.
+
+With that, let's open the call to questions.
+
+---
+
+**Operator:** Thank you. We'll now begin the question-and-answer session. (Operator Instructions) Our first question comes from Erik Woodring with Morgan Stanley.
+
+**Erik Woodring (Morgan Stanley):** Thanks for taking my question. Tim, can you talk a bit more about the demand environment you're seeing, particularly for iPhone, as we head into the back half of the year? And Luca, any color on the Services growth sustainability?
+
+**Tim Cook:** Erik, on iPhone, we were pleased with the performance in the June quarter. We saw a strong response to the iPhone 14 lineup. The switcher and upgrader rates are healthy. Emerging markets, as I mentioned, are a key area of strength. We're optimistic about the upcoming product cycle.
+
+**Luca Maestri:** On Services, Erik, the 8% growth was very strong. We're seeing broad-based strength across our categories and geographies. The installed base growth is a key tailwind, and customer engagement with our ecosystem remains very high. We feel good about the continued growth trajectory of our Services business.
+
+---
+**(Further Q&A with other analysts would follow in a real transcript, covering topics like Vision Pro, AI strategy, regional performance, supply chain, capital allocation, etc.)**
+
+---
+**Operator:** This concludes today's conference call. You may now disconnect.
+
+---
+This is a synthetic and abridged example of an Apple earnings call transcript. Actual transcripts are much longer and more detailed.

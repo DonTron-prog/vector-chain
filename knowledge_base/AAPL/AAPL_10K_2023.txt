@@ -1,0 +1,110 @@
+# Apple Inc. - Form 10-K - Fiscal Year Ended September 30, 2023
+
+## Item 1. Business
+
+Apple Inc. designs, manufactures, and markets smartphones (iPhone), personal computers (Mac), tablets (iPad), wearables (Apple Watch, AirPods), and accessories worldwide. It also sells various related services, including the App Store, Apple Music, Apple TV+, iCloud, and AppleCare. The Company sells its products and resells third-party products in most of its major markets directly to consumers, small and mid-sized businesses and education, enterprise and government customers through its retail and online stores and its direct sales force. The Company also sells its products through third-party cellular network carriers, wholesalers, retailers and resellers.
+
+## Item 1A. Risk Factors
+
+The Company is subject to a variety of risks, including but not limited to:
+- **Intense Competition:** The markets for the Company’s products and services are highly competitive and subject to rapid technological change.
+- **Supply Chain Disruptions:** Reliance on third-party suppliers and manufacturers, primarily located in Asia, exposes the Company to risks of supply chain interruption.
+- **International Operations:** A significant portion of the Company's revenue is generated outside the U.S., exposing it to global economic conditions, geopolitical risks, and foreign currency fluctuations.
+- **Intellectual Property:** The Company faces risks related to intellectual property litigation and the ability to protect its own intellectual property.
+- **Regulatory Environment:** The Company is subject to complex and evolving laws and regulations worldwide, including those related to privacy, data protection, and antitrust.
+
+## Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+**Overview:**
+For the fiscal year ended September 30, 2023, Apple reported net sales of $383.3 billion, a decrease of 3% compared to $394.3 billion in the prior year. This decrease was primarily driven by lower iPhone and Mac sales, partially offset by growth in Services revenue. Net income for fiscal 2023 was $97.0 billion, or $6.13 per diluted share, compared to $99.8 billion, or $6.11 per diluted share, in fiscal 2022.
+
+**Segment Performance:**
+- **iPhone:** Net sales of $200.6 billion, down 2% year-over-year.
+- **Mac:** Net sales of $29.4 billion, down 27% year-over-year.
+- **iPad:** Net sales of $28.3 billion, down 3% year-over-year.
+- **Wearables, Home and Accessories:** Net sales of $39.8 billion, down 3% year-over-year.
+- **Services:** Net sales of $85.2 billion, up 9% year-over-year, driven by growth in advertising, App Store, and cloud services.
+
+**Liquidity and Capital Resources:**
+As of September 30, 2023, the Company had $61.5 billion in cash and cash equivalents and $109.8 billion in marketable securities. The Company continues to return capital to shareholders through dividends and share repurchases.
+
+## Item 8. Financial Statements and Supplementary Data
+
+**Apple Inc.**
+**CONSOLIDATED BALANCE SHEETS (Synthetic Example)**
+(In millions, except number of shares which are reflected in thousands and par value)
+
+|                                       | September 30, 2023 | September 24, 2022 |
+|---------------------------------------|--------------------|--------------------|
+| **Assets**                            |                    |                    |
+| Current assets:                       |                    |                    |
+|   Cash and cash equivalents           | $61,548            | $48,304            |
+|   Marketable securities               | $109,832           | $120,805           |
+|   Accounts receivable, net            | $60,985            | $64,216            |
+|   Inventories                         | $6,331             | $4,946             |
+|   Vendor non-trade receivables        | $39,440            | $46,551            |
+|   Other current assets                | $21,337            | $21,709            |
+| Total current assets                  | $299,473           | $306,531           |
+| Non-current assets:                   |                    |                    |
+|   Marketable securities               | $134,870           | $127,877           |
+|   Property, plant and equipment, net  | $43,545            | $42,117            |
+|   Other non-current assets            | $54,698            | $54,330            |
+| Total non-current assets              | $233,113           | $224,324           |
+| **Total Assets**                      | **$532,586**       | **$530,855**       |
+|                                       |                    |                    |
+| **Liabilities and Shareholders' Equity**|                    |                    |
+| Current liabilities:                  |                    |                    |
+|   Accounts payable                    | $62,611            | $70,982            |
+|   Other current liabilities           | $80,779            | $79,103            |
+|   Deferred revenue                    | $8,501             | $7,912             |
+|   Commercial paper                    | $9,982             | $9,983             |
+|   Term debt, current portion          | $11,128            | $8,135             |
+| Total current liabilities             | $172,001           | $176,115           |
+| Non-current liabilities:              |                    |                    |
+|   Term debt                           | $95,987            | $98,959            |
+|   Other non-current liabilities       | $57,390            | $58,521            |
+| Total non-current liabilities         | $153,377           | $157,480           |
+| **Total Liabilities**                 | **$325,378**       | **$333,595**       |
+|                                       |                    |                    |
+| Shareholders' Equity:                 |                    |                    |
+|   Common stock and additional paid-in capital, $0.00001 par value | $73,098     | $64,849            |
+|   Retained earnings                   | $134,110           | $132,411           |
+|   Accumulated other comprehensive income (loss) | ($11,000)        | ($11,109)          |
+| **Total Shareholders' Equity**        | **$196,208**       | **$186,151**       |
+| **Total Liabilities and Shareholders' Equity** | **$521,586**       | **$519,746**       |
+
+**Apple Inc.**
+**CONSOLIDATED STATEMENTS OF OPERATIONS (Synthetic Example)**
+(In millions, except per share amounts)
+
+|                                       | Year Ended September 30, 2023 | Year Ended September 24, 2022 | Year Ended September 25, 2021 |
+|---------------------------------------|-------------------------------|-------------------------------|-------------------------------|
+| Net sales:                            |                               |                               |                               |
+|   Products                            | $298,086                      | $316,199                      | $297,392                      |
+|   Services                            | $85,200                       | $78,130                       | $68,425                       |
+| Total net sales                       | $383,286                      | $394,329                      | $365,817                      |
+| Cost of sales:                        |                               |                               |                               |
+|   Products                            | $189,780                      | $201,750                      | $192,266                      |
+|   Services                            | $24,708                       | $22,658                       | $19,843                       |
+| Total cost of sales                   | $214,488                      | $224,408                      | $212,109                      |
+| Gross margin                          | $168,798                      | $169,921                      | $153,708                      |
+| Operating expenses:                   |                               |                               |                               |
+|   Research and development            | $29,915                       | $26,251                       | $21,914                       |
+|   Selling, general and administrative | $26,864                       | $25,094                       | $21,973                       |
+| Total operating expenses              | $56,779                       | $51,345                       | $43,887                       |
+| Operating income                      | $112,019                      | $118,576                      | $109,821                      |
+| Other income (expense), net           | $879                          | $334                          | $1,205                        |
+| Income before provision for income taxes| $112,898                      | $118,910                      | $111,026                      |
+| Provision for income taxes            | $15,902                       | $19,115                       | $14,527                       |
+| **Net Income**                        | **$96,996**                   | **$99,795**                   | **$96,499**                   |
+|                                       |                               |                               |                               |
+| Earnings per share:                   |                               |                               |                               |
+|   Basic                               | $6.16                         | $6.15                         | $5.67                         |
+|   Diluted                             | $6.13                         | $6.11                         | $5.61                         |
+|                                       |                               |                               |                               |
+| Shares used in computing earnings per share: |                            |                               |                               |
+|   Basic                               | 15,744,267                    | 16,215,962                    | 16,864,919                    |
+|   Diluted                             | 15,812,547                    | 16,325,834                    | 17,057,337                    |
+
+This is a synthetic and simplified 10-K document for Apple Inc. for the fiscal year 2023.
+Actual 10-K filings are significantly more detailed and contain extensive financial data, footnotes, and detailed discussions on all aspects of the business. This example is for illustrative purposes only.

@@ -36,8 +36,8 @@ class ConfigManager:
             "openrouter_api_key": os.getenv("OPENROUTER_API_KEY"),
             "model_name": os.getenv("MODEL_NAME", "gpt-4o-mini"),
             "searxng_base_url": os.getenv("SEARXNG_BASE_URL", "http://localhost:8080"),
-            "knowledge_base_dir": os.path.join(os.path.dirname(__file__), "..", "..", "knowledge_base_sre"),
-            "persist_dir": os.path.join(os.path.dirname(__file__), "..", "..", "sre_chroma_db"),
+            "knowledge_base_dir": os.path.join(os.path.dirname(__file__), "..", "..", "knowledge_base"),
+            "persist_dir": os.path.join(os.path.dirname(__file__), "..", "..", "investment_chroma_db"),
             "recreate_rag_collection": os.getenv("RECREATE_RAG_COLLECTION", "False").lower() == "true",
             "force_reload_rag_docs": os.getenv("FORCE_RELOAD_RAG_DOCS", "False").lower() == "true",
             "max_search_results": int(os.getenv("MAX_SEARCH_RESULTS", 3))

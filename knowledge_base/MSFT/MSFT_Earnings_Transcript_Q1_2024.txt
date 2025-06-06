@@ -1,0 +1,77 @@
+# Microsoft Corp. (MSFT) Q1 2024 Earnings Call Transcript (Synthetic Example)
+# Date: October 24, 2023
+
+**Executives:**
+
+*   Brett Iversen - Vice President of Investor Relations
+*   Satya Nadella - Chairman and Chief Executive Officer
+*   Amy Hood - Chief Financial Officer
+
+**Analysts:**
+
+*   Keith Weiss - Morgan Stanley
+*   Mark Moerdler - Bernstein
+*   Raimo Lenschow - Barclays
+*   Karl Keirstead - UBS
+*   Brent Thill - Jefferies
+*   Kash Rangan - Goldman Sachs
+*   Brad Zelnick - Deutsche Bank
+
+---
+
+**Operator:** Greetings, and welcome to the Microsoft Fiscal Year 2024 First Quarter Earnings Conference Call. (Operator Instructions) As a reminder, this conference is being recorded. I would now like to turn the call over to Brett Iversen, Vice President of Investor Relations. Mr. Iversen, you may begin.
+
+**Brett Iversen:** Good afternoon, and thank you for joining us today. On the call with me are Satya Nadella, Chairman and Chief Executive Officer; and Amy Hood, Chief Financial Officer. Satya will share some highlights from the quarter, and Amy will cover our financial results and outlook. Then we'll take questions from the financial community.
+
+Please note that some of the information you'll hear during our discussion today will consist of forward-looking statements, including, without limitation, those regarding revenue, gross margin, operating expenses, other income and expense, taxes, capital allocation, and future business outlook, including the potential impact of macroeconomic conditions and AI on the company's business and results of operations. These statements involve risks and uncertainties that may cause actual results or trends to differ materially from our forecast. For more information, please refer to the risk factors discussed in Microsoft's Form 10-K for fiscal year 2023 and subsequent Forms 10-Q filed with the SEC. Microsoft assumes no obligation to update any forward-looking statements or information, which speak as of their respective dates.
+
+All financial measures and growth rates we disclose today are presented on a non-GAAP basis under ASC 606, unless otherwise specified. We provide a reconciliation between GAAP and non-GAAP measures in our earnings release and on our Investor Relations website.
+
+With that, I'll turn the call over to Satya.
+
+**Satya Nadella:** Thank you, Brett, and thank you, everyone, for joining us. We are off to a strong start in fiscal 2024, driven by the continued strength of Microsoft Cloud, which surpassed $110 billion in annualized revenue, up 24%.
+
+We are rapidly infusing AI across every layer of the tech stack and for every role and business process to drive new levels of productivity for our customers. From Azure OpenAI Service to Copilots spanning GitHub, Microsoft 365, Dynamics 365, and Security, we are empowering individuals and organizations to achieve more.
+
+Azure once again drove our results, with accelerating growth as customers continue to choose our comprehensive cloud platform to build and run their mission-critical workloads. We are seeing strong demand for our AI services, with over 18,000 organizations now using Azure OpenAI Service, including new-to-Azure customers.
+
+In Productivity and Business Processes, Microsoft 365 Commercial momentum continues, with E5 adoption remaining strong. And we are excited about the early feedback and demand for Microsoft 365 Copilot, which became generally available for enterprise customers on November 1st.
+
+In More Personal Computing, while the PC market remains soft, we are innovating and investing for the future, particularly in areas like Windows, Surface, and, of course, Gaming. Xbox content and services revenue grew, driven by first-party titles and Game Pass.
+
+Across Microsoft, we are focused on helping our customers use the breadth and depth of our offerings to get the most value out of their digital spend and innovate for this new era of AI.
+
+I'll now hand it over to Amy.
+
+**Amy Hood:** Thank you, Satya, and good afternoon, everyone. Our first quarter revenue was $55.7 billion, up 9% and 8% in constant currency. Cost of revenue was $16.9 billion, and gross margin dollars increased 10%. Operating income increased 13%.
+
+Productivity and Business Processes revenue was $18.6 billion, up 13% and 12% in constant currency. Office Commercial products and cloud services revenue increased 15%, driven by Office 365 Commercial growth of 18%. Dynamics products and cloud services revenue increased 22%.
+
+Intelligent Cloud revenue was $24.3 billion, increasing 19%. Server products and cloud services revenue increased 21%, driven by Azure and other cloud services growth of 29% and 28% in constant currency.
+
+More Personal Computing revenue was $12.8 billion, down 3%. Windows OEM revenue declined 4%. Devices revenue declined 22%. Search and news advertising revenue ex-TAC increased 10%. And in Gaming, revenue increased 9%, with Xbox content and services revenue up 13%.
+
+Now, back to total company results. We returned $9.1 billion to shareholders through share repurchases and dividends.
+
+For Q2, we expect revenue of $60.4 billion to $61.4 billion. We expect COGS of $19.35 billion to $19.55 billion, and operating expenses of $15.5 billion to $15.6 billion.
+
+With that, Brett, let's go to Q&A.
+
+---
+
+**Operator:** Thank you. (Operator Instructions) Our first question comes from Keith Weiss with Morgan Stanley.
+
+**Keith Weiss (Morgan Stanley):** Excellent. Thank you guys for taking the question, and a very nice start to the year. Satya, could you talk a little bit about the early demand signals you're seeing for Microsoft 365 Copilot? And how should we think about the monetization opportunity there?
+
+**Satya Nadella:** Thanks, Keith. The interest in Microsoft 365 Copilot has been fantastic. We have thousands of customers in our early access program, and the feedback has been very positive around productivity gains. In terms of monetization, we announced pricing of $30 per user per month for commercial customers. We see this as a significant opportunity to drive incremental ARPU and value for our customers.
+
+**Amy Hood:** And Keith, just to add, we expect the revenue ramp for Copilot to be gradual as we scale availability and as customers deploy it across their organizations.
+
+---
+**(Further Q&A with other analysts would follow in a real transcript, covering topics like Azure growth drivers, AI investment, PC market outlook, gaming strategy, Activision Blizzard integration, etc.)**
+
+---
+**Operator:** This concludes today's conference call. You may now disconnect.
+
+---
+This is a synthetic and abridged example of a Microsoft earnings call transcript. Actual transcripts are much longer and more detailed.

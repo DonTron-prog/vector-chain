@@ -1,0 +1,75 @@
+# Microsoft Corporation - Form 10-Q - For the Quarterly Period Ended September 30, 2023 (Q1 FY2024)
+
+## Item 1. Financial Statements (Unaudited)
+
+**Microsoft Corporation**
+**CONDENSED CONSOLIDATED STATEMENTS OF INCOME (Unaudited) (Synthetic Example)**
+(In millions, except per share data)
+
+|                                       | Three Months Ended September 30, |
+|---------------------------------------|---------------------------------|
+|                                       | 2023           | 2022             |
+| Revenue:                              |                |                  |
+|   Product                             | $18,550        | $19,030          |
+|   Service and other                   | $37,100        | $32,050          |
+| Total revenue                         | $55,650        | $51,080          |
+| Cost of revenue:                      |                |                  |
+|   Product                             | $5,050         | $5,520           |
+|   Service and other                   | $11,800        | $10,100          |
+| Total cost of revenue                 | $16,850        | $15,620          |
+| Gross margin                          | $38,800        | $35,460          |
+| Operating expenses:                   |                |                  |
+|   Research and development            | $6,950         | $6,600           |
+|   Sales and marketing                 | $5,800         | $5,550           |
+|   General and administrative          | $1,700         | $1,650           |
+| Total operating expenses              | $14,450        | $13,800          |
+| Operating income                      | $24,350        | $21,660          |
+| Other income (expense), net           | $250           | $150             |
+| Income before income taxes            | $24,600        | $21,810          |
+| Provision for income taxes            | $4,674         | $3,300           |
+| **Net Income**                        | **$19,926**    | **$18,510**      |
+|                                       |                |                  |
+| Earnings per share:                   |                |                  |
+|   Basic                               | $2.68          | $2.49            |
+|   Diluted                             | $2.67          | $2.48            |
+|                                       |                |                  |
+| Weighted average shares outstanding:  |                |                  |
+|   Basic                               | 7,440          | 7,450            |
+|   Diluted                             | 7,465          | 7,470            |
+
+**Microsoft Corporation**
+**CONDENSED CONSOLIDATED BALANCE SHEETS (Unaudited) (Synthetic Example)**
+(In millions)
+
+|                                       | September 30, 2023 | June 30, 2023 |
+|---------------------------------------|--------------------|---------------|
+| **Assets**                            |                    |               |
+| Current assets:                       |                    |               |
+|   Cash and cash equivalents           | $38,020            | $34,704       |
+|   Short-term investments              | $100,500           | $104,680      |
+|   Accounts receivable, net            | $45,100            | $48,688       |
+|   Inventories                         | $3,700             | $3,800        |
+|   Other current assets                | $19,200            | $18,321       |
+| Total current assets                  | $206,520           | $210,193      |
+| Non-current assets                    | $230,100           | $225,601      |
+| **Total Assets**                      | **$436,620**       | **$435,794**  |
+|                                       |                    |               |
+| **Liabilities and Shareholders' Equity**|                    |               |
+| Current liabilities                   | $98,500            | $103,715      |
+| Non-current liabilities               | $75,300            | $77,590       |
+| **Total Liabilities**                 | **$173,800**       | **$181,305**  |
+| **Total Shareholders' Equity**        | **$262,820**       | **$254,489**  |
+| **Total Liabilities and Shareholders' Equity** | **$436,620**       | **$435,794**  |
+
+## Item 2. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+**Overview:**
+For the first quarter of fiscal year 2024, ended September 30, 2023, Microsoft reported revenue of $55.7 billion, an increase of 9% (8% in constant currency) compared to the same period in the prior year. This growth was primarily driven by continued momentum in our Intelligent Cloud segment, particularly Azure, and solid performance in Productivity and Business Processes. Net income was $19.9 billion, an increase of 8% year-over-year.
+
+**Segment Performance (Q1 FY2024 vs Q1 FY2023):**
+- **Productivity and Business Processes:** Revenue of $18.6 billion, up 13% (12% in constant currency). Office 365 Commercial revenue grew 15% (14% in constant currency). LinkedIn revenue increased 8%.
+- **Intelligent Cloud:** Revenue of $24.3 billion, up 19% (19% in constant currency). Azure and other cloud services revenue grew 29% (28% in constant currency), driven by strong demand for our AI services.
+- **More Personal Computing:** Revenue of $12.8 billion, down 3% (down 3% in constant currency). Windows OEM revenue declined 4%, while Xbox content and services revenue grew 13%.
+
+This is a synthetic and simplified 10-Q document for Microsoft Corporation for Q1 FY2024.
+Actual 10-Q filings are detailed and include comprehensive financial data, footnotes, and discussions. This example is for illustrative purposes only.

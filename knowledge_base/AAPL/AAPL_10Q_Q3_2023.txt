@@ -1,0 +1,79 @@
+# Apple Inc. - Form 10-Q - For the Quarterly Period Ended July 1, 2023
+
+## Item 1. Financial Statements (Unaudited)
+
+**Apple Inc.**
+**CONDENSED CONSOLIDATED STATEMENTS OF OPERATIONS (Unaudited) (Synthetic Example)**
+(In millions, except per share amounts)
+
+|                                       | Three Months Ended | Nine Months Ended  |
+|---------------------------------------|--------------------|--------------------|
+|                                       | July 1, 2023       | July 1, 2023       |
+| Net sales:                            |                    |                    |
+|   Products                            | $60,584            | $230,998           |
+|   Services                            | $21,213            | $63,011            |
+| Total net sales                       | $81,797            | $294,009           |
+| Cost of sales:                        |                    |                    |
+|   Products                            | $38,070            | $145,880           |
+|   Services                            | $6,003             | $18,115            |
+| Total cost of sales                   | $44,073            | $163,995           |
+| Gross margin                          | $37,724            | $130,014           |
+| Operating expenses:                   |                    |                    |
+|   Research and development            | $7,442             | $22,608            |
+|   Selling, general and administrative | $6,201             | $19,987            |
+| Total operating expenses              | $13,643            | $42,595            |
+| Operating income                      | $24,081            | $87,419            |
+| Other income (expense), net           | $183               | $550               |
+| Income before provision for income taxes| $24,264            | $87,969            |
+| Provision for income taxes            | $3,761             | $13,001            |
+| **Net Income**                        | **$20,503**        | **$74,968**        |
+|                                       |                    |                    |
+| Earnings per share:                   |                    |                    |
+|   Basic                               | $1.30              | $4.76              |
+|   Diluted                             | $1.29              | $4.73              |
+|                                       |                    |                    |
+| Shares used in computing earnings per share: |                |                    |
+|   Basic                               | 15,760,115         | 15,755,890         |
+|   Diluted                             | 15,833,450         | 15,840,123         |
+
+**Apple Inc.**
+**CONDENSED CONSOLIDATED BALANCE SHEETS (Unaudited) (Synthetic Example)**
+(In millions)
+
+|                                       | July 1, 2023       | September 24, 2022 |
+|---------------------------------------|--------------------|--------------------|
+| **Assets**                            |                    |                    |
+| Current assets:                       |                    |                    |
+|   Cash and cash equivalents           | $55,670            | $48,304            |
+|   Marketable securities               | $100,123           | $120,805           |
+|   Accounts receivable, net            | $50,345            | $64,216            |
+|   Inventories                         | $5,980             | $4,946             |
+|   Other current assets                | $20,110            | $21,709            |
+| Total current assets                  | $232,228           | $259,980           |
+| Non-current assets                    | $220,500           | $224,324           |
+| **Total Assets**                      | **$452,728**       | **$484,304**       |
+|                                       |                    |                    |
+| **Liabilities and Shareholders' Equity**|                    |                    |
+| Current liabilities:                  |                    |                    |
+|   Accounts payable                    | $55,890            | $70,982            |
+|   Other current liabilities           | $75,120            | $79,103            |
+| Total current liabilities             | $131,010           | $150,085           |
+| Non-current liabilities               | $145,670           | $157,480           |
+| **Total Liabilities**                 | **$276,680**       | **$307,565**       |
+| **Total Shareholders' Equity**        | **$176,048**       | **$176,739**       |
+| **Total Liabilities and Shareholders' Equity** | **$452,728**       | **$484,304**       |
+
+## Item 2. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+**Overview:**
+For the third quarter of fiscal 2023, Apple reported net sales of $81.8 billion, a decrease of 1% compared to the same period in the prior year. This was primarily due to foreign exchange headwinds and a challenging macroeconomic environment impacting product sales. Services revenue continued its strong growth trajectory. Net income for the quarter was $20.5 billion, an increase of 5% year-over-year.
+
+**Segment Performance (Q3 2023 vs Q3 2022):**
+- **iPhone:** Net sales of $39.7 billion, down 2%.
+- **Mac:** Net sales of $6.8 billion, down 7%.
+- **iPad:** Net sales of $5.8 billion, down 20%.
+- **Wearables, Home and Accessories:** Net sales of $8.3 billion, up 2%.
+- **Services:** Net sales of $21.2 billion, up 8%.
+
+This is a synthetic and simplified 10-Q document for Apple Inc. for the third quarter of fiscal 2023.
+Actual 10-Q filings are detailed and include comprehensive financial data, footnotes, and discussions. This example is for illustrative purposes only.

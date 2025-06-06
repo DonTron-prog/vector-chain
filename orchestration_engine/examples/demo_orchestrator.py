@@ -59,12 +59,12 @@ def main():
     # Define example investment research queries
     example_queries = [
         {
-            "query": "Analyze NVIDIA's competitive position in AI chips market including market share and technological advantages",
-            "context": "Focus on Q3 2024 earnings, compare with AMD and Intel, assess impact of new Blackwell architecture on competitive moat"
+            "query": "Summarize Apple's financial performance in Q3 2023 and key risk factors mentioned in their 2023 10-K.",
+            "context": "Utilize information from AAPL's Q3 2023 10-Q, 2023 10-K, and the Q3 2023 earnings call transcript. Focus on revenue, net income, segment performance, and explicitly stated risks."
         },
         {
-            "query": "Evaluate Tesla's valuation premium compared to traditional automakers",
-            "context": "Compare P/E ratios, growth prospects, and market positioning. Focus on autonomous driving capabilities and energy business contribution to justify premium"
+            "query": "What were Microsoft's key growth drivers in Intelligent Cloud for Q1 FY2024, and what is their strategy regarding AI services like Azure OpenAI?",
+            "context": "Refer to MSFT's Q1 FY2024 10-Q, the corresponding earnings call transcript, and recent analyst reports. Specifically look for Azure growth numbers and commentary on AI product adoption."
         },
         {
             "query": "Research emerging risks in the semiconductor industry supply chain",

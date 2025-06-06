@@ -1,0 +1,107 @@
+# Microsoft Corporation - Form 10-K - Fiscal Year Ended June 30, 2023
+
+## Item 1. Business
+
+Microsoft Corporation develops, licenses, and supports a wide range of software products, services, and devices. The Company's segments include Productivity and Business Processes, Intelligent Cloud, and More Personal Computing.
+
+## Item 1A. Risk Factors
+
+Key risks include, but are not limited to:
+- Intense competition in all of Microsoft's markets.
+- Cybersecurity threats and data privacy concerns.
+- Reliance on innovation and ability to respond to technological changes.
+- Risks associated with acquisitions and strategic investments.
+
+## Item 7. Management's Discussion and Analysis of Financial Condition and Results of Operations
+
+**Overview:**
+For the fiscal year ended June 30, 2023, Microsoft reported revenue of $211.9 billion, an increase of 7% (11% in constant currency) compared to $198.3 billion in the prior year. This growth was driven by strong performance in the Intelligent Cloud segment, particularly Azure and other cloud services. Operating income was $88.5 billion, and net income was $72.4 billion. Diluted earnings per share were $9.68.
+
+**Segment Performance:**
+- **Productivity and Business Processes:** Revenue of $69.3 billion, up 10% (14% in constant currency). Growth driven by Office 365 Commercial and Dynamics 365.
+- **Intelligent Cloud:** Revenue of $91.9 billion, up 19% (23% in constant currency). Azure and other cloud services revenue grew 27% (31% in constant currency).
+- **More Personal Computing:** Revenue of $50.7 billion, down 13% (10% in constant currency). Windows OEM revenue decreased, and Devices revenue also declined. Xbox content and services revenue grew.
+
+## Item 8. Financial Statements and Supplementary Data
+
+**Microsoft Corporation**
+**CONSOLIDATED BALANCE SHEETS (Synthetic Example)**
+(In millions, except per share data)
+
+|                                       | June 30, 2023 | June 30, 2022 |
+|---------------------------------------|---------------|---------------|
+| **Assets**                            |               |               |
+| Current assets:                       |               |               |
+|   Cash and cash equivalents           | $34,704       | $13,931       |
+|   Short-term investments              | $104,680      | $90,922       |
+|   Accounts receivable, net            | $48,688       | $44,261       |
+|   Inventories                         | $3,800        | $3,742        |
+|   Other current assets                | $18,321       | $16,987       |
+| Total current assets                  | $210,193      | $169,843      |
+| Non-current assets:                   |               |               |
+|   Property and equipment, net         | $107,301      | $87,478       |
+|   Equity investments                  | $12,500       | $11,800       |
+|   Goodwill                            | $70,150       | $67,541       |
+|   Intangible assets, net              | $15,200       | $13,450       |
+|   Other long-term assets              | $20,450       | $18,900       |
+| Total non-current assets              | $225,601      | $199,169      |
+| **Total Assets**                      | **$435,794**  | **$369,012**  |
+|                                       |               |               |
+| **Liabilities and Shareholders' Equity**|               |               |
+| Current liabilities:                  |               |               |
+|   Accounts payable                    | $20,115       | $17,854       |
+|   Current portion of long-term debt   | $8,000        | $5,500        |
+|   Accrued compensation                | $15,300       | $14,200       |
+|   Short-term unearned revenue         | $35,100       | $32,500       |
+|   Other current liabilities           | $25,200       | $23,100       |
+| Total current liabilities             | $103,715      | $93,154       |
+| Non-current liabilities:              |               |               |
+|   Long-term debt                      | $41,990       | $47,030       |
+|   Long-term unearned revenue          | $5,500        | $4,800        |
+|   Other long-term liabilities         | $30,100       | $28,500       |
+| Total non-current liabilities         | $77,590       | $80,330       |
+| **Total Liabilities**                 | **$181,305**  | **$173,484**  |
+|                                       |               |               |
+| Shareholders' Equity:                 |               |               |
+|   Common stock and paid-in capital    | $92,180       | $87,953       |
+|   Retained earnings                   | $160,309      | $105,575      |
+|   Accumulated other comprehensive income (loss) | $2,000    | $2,000        |
+| **Total Shareholders' Equity**        | **$254,489**  | **$195,528**  |
+| **Total Liabilities and Shareholders' Equity** | **$435,794**  | **$369,012**  |
+
+**Microsoft Corporation**
+**CONSOLIDATED STATEMENTS OF INCOME (Synthetic Example)**
+(In millions, except per share data)
+
+|                                       | Year Ended June 30, 2023 | Year Ended June 30, 2022 | Year Ended June 30, 2021 |
+|---------------------------------------|--------------------------|--------------------------|--------------------------|
+| Revenue:                              |                          |                          |                          |
+|   Product                             | $72,730                  | $79,589                  | $71,098                  |
+|   Service and other                   | $139,185                 | $118,696                 | $97,047                  |
+| Total revenue                         | $211,915                 | $198,285                 | $168,145                 |
+| Cost of revenue:                      |                          |                          |                          |
+|   Product                             | $20,890                  | $23,450                  | $21,500                  |
+|   Service and other                   | $45,670                  | $39,880                  | $32,700                  |
+| Total cost of revenue                 | $66,560                  | $63,330                  | $54,200                  |
+| Gross margin                          | $145,355                 | $134,955                 | $113,945                 |
+| Operating expenses:                   |                          |                          |                          |
+|   Research and development            | $27,195                  | $24,512                  | $20,716                  |
+|   Sales and marketing                 | $22,799                  | $21,825                  | $20,117                  |
+|   General and administrative          | $6,826                   | $6,301                   | $5,107                   |
+| Total operating expenses              | $56,820                  | $52,638                  | $45,940                  |
+| Operating income                      | $88,535                  | $82,317                  | $68,005                  |
+| Other income (expense), net           | ($380)                   | ($252)                   | $1,281                   |
+| Income before income taxes            | $88,155                  | $82,065                  | $69,286                  |
+| Provision for income taxes            | $15,785                  | $10,978                  | $9,831                   |
+| **Net Income**                        | **$72,370**              | **$71,087**              | **$59,455**              |
+|                                       |                          |                          |                          |
+| Earnings per share:                   |                          |                          |                          |
+|   Basic                               | $9.72                    | $9.52                    | $7.97                    |
+|   Diluted                             | $9.68                    | $9.45                    | $7.89                    |
+|                                       |                          |                          |                          |
+| Weighted average shares outstanding:  |                          |                          |                          |
+|   Basic                               | 7,446                    | 7,464                    | 7,456                    |
+|   Diluted                             | 7,473                    | 7,519                    | 7,538                    |
+
+This is a synthetic and simplified 10-K document for Microsoft Corporation for the fiscal year 2023.
+Actual 10-K filings are significantly more detailed. This example is for illustrative purposes only.
