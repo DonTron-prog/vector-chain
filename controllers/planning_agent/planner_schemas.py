@@ -17,8 +17,8 @@ class PlanStepSchema(BaseIOSchema):
 class SimplePlanSchema(BaseIOSchema):
     """Schema for the simple planning agent's plan."""
     
-    alert: str = Field(..., description="The original system alert")
-    context: str = Field(..., description="Contextual information about the system")
+    investment_query: str = Field(..., description="The original investment query")
+    research_context: str = Field(..., description="Contextual information for the research")
     steps: List[PlanStepSchema] = Field(..., description="Ordered list of plan steps")
     current_step_index: int = Field(default=0, description="Index of currently executing step")
     accumulated_knowledge: str = Field(default="", description="Running summary of findings from completed steps")
@@ -28,8 +28,8 @@ class SimplePlanSchema(BaseIOSchema):
 class PlanningAgentInputSchema(BaseIOSchema):
     """Input schema for the Planning Agent."""
     
-    system_alert: str = Field(..., description="The system alert to create a plan for")
-    system_context: str = Field(..., description="Contextual information about the system")
+    investment_query: str = Field(..., description="The investment query to create a plan for")
+    research_context: str = Field(..., description="Contextual information for the research")
 
 
 class PlanningAgentOutputSchema(BaseIOSchema):

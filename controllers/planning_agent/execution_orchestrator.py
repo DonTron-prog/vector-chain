@@ -12,8 +12,8 @@ from controllers.planning_agent.atomic_planning_agent import AtomicPlanningOutpu
 class ExecutionOrchestratorInputSchema(BaseIOSchema):
     """Input schema for the Execution Orchestrator."""
     
-    alert: str = Field(..., description="The original system alert")
-    context: str = Field(..., description="Contextual information about the system")
+    investment_query: str = Field(..., description="The original investment query")
+    research_context: str = Field(..., description="Contextual information for the research")
     planning_output: AtomicPlanningOutputSchema = Field(..., description="Output from the planning agent")
 
 
@@ -66,8 +66,8 @@ class ExecutionOrchestrator:
         Returns:
             ExecutionOrchestratorOutputSchema: Complete execution results
         """
-        alert = params.alert
-        context = params.context
+        investment_query = params.investment_query
+        research_context = params.research_context
         planning_output = params.planning_output
         steps = planning_output.steps
         executed_steps = []
@@ -82,9 +82,9 @@ class ExecutionOrchestrator:
             
             try:
                 # Create execution context for this step
-                execution_context = ExecutionContext(
-                    alert=alert,
-                    context=context,
+                execution_context = ExecutionContext( # Maps to existing ExecutionContext fields
+                    alert=investment_query, # alert field in ExecutionContext gets investment_query
+                    context=research_context, # context field in ExecutionContext gets research_context
                     accumulated_knowledge=accumulated_knowledge,
                     step_id=f"step_{step_index + 1}",
                     step_description=step.description
@@ -150,7 +150,7 @@ class ExecutionOrchestrator:
                 break
         
         # Generate final summary
-        final_summary = self._generate_execution_summary(alert, context, steps, executed_steps, success)
+        final_summary = self._generate_execution_summary(investment_query, research_context, steps, executed_steps, success)
         
         return ExecutionOrchestratorOutputSchema(
             executed_steps=executed_steps,
@@ -161,8 +161,8 @@ class ExecutionOrchestrator:
     
     def _generate_execution_summary(
         self,
-        alert: str,
-        context: str,
+        investment_query: str,
+        research_context: str,
         steps: list,
         executed_steps: List[StepExecutionResult],
         success: bool
@@ -174,11 +174,11 @@ class ExecutionOrchestrator:
         
         summary = f"""# Plan Execution Summary
 
-## Original Alert
-{alert}
+## Original Investment Query
+{investment_query}
 
-## Context
-{context}
+## Research Context
+{research_context}
 
 ## Execution Results
 - **Status**: {'✅ Success' if success else '❌ Failed'}
@@ -207,17 +207,17 @@ if __name__ == "__main__":
     # Example planning output for testing
     test_planning_output = AtomicPlanningOutputSchema(
         steps=[
-            PlanStepSchema(description="Investigate system status"),
-            PlanStepSchema(description="Check error logs"),
-            PlanStepSchema(description="Identify root cause")
+            PlanStepSchema(description="Gather financial data for MSFT"),
+            PlanStepSchema(description="Analyze MSFT's latest earnings report"),
+            PlanStepSchema(description="Assess market sentiment for MSFT")
         ],
-        reasoning="Standard SRE investigation approach for system alerts"
+        reasoning="Standard investment research approach for a large-cap tech stock."
     )
     
     # Example input
     test_input = ExecutionOrchestratorInputSchema(
-        alert="Test alert",
-        context="Test context",
+        investment_query="Is MSFT a good buy at current price?",
+        research_context="Considering MSFT for a long-term portfolio. Recent news about AI developments.",
         planning_output=test_planning_output
     )
     

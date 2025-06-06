@@ -1,15 +1,15 @@
-# Planning Agent with Atomic Agents
+# Investment Research Planning Agent with Atomic Agents
 
-This module provides a modern SRE incident planning and execution system built with the Atomic Agents framework.
+This module provides a modern investment research planning and execution system built with the Atomic Agents framework.
 
 ## Architecture Overview
 
-The planning agent uses **Atomic Agents** architecture with clear separation of concerns:
+The investment research planning agent uses **Atomic Agents** architecture with clear separation of concerns:
 
-- **Planning**: [`atomic_planning_agent.py`](atomic_planning_agent.py) - Pure planning with structured outputs
-- **Execution**: [`execution_orchestrator.py`](execution_orchestrator.py) - Pure execution logic
-- **Schemas**: [`planner_schemas.py`](planner_schemas.py) - Structured I/O contracts
-- **Orchestration**: [`atomic_executor.py`](atomic_executor.py) - Complete workflow coordination
+- **Planning**: [`atomic_planning_agent.py`](controllers/planning_agent/atomic_planning_agent.py) - Pure investment research planning with structured outputs
+- **Execution**: [`execution_orchestrator.py`](controllers/planning_agent/execution_orchestrator.py) - Pure execution logic for research plans
+- **Schemas**: [`planner_schemas.py`](controllers/planning_agent/planner_schemas.py) - Structured I/O contracts for investment queries
+- **Orchestration**: [`atomic_executor.py`](controllers/planning_agent/atomic_executor.py) - Complete investment research workflow coordination
 
 ## Quick Start
 
@@ -19,7 +19,7 @@ The planning agent uses **Atomic Agents** architecture with clear separation of 
 from controllers.planning_agent import (
     create_atomic_planning_agent,
     ExecutionOrchestrator,
-    AtomicPlanningInputSchema,
+    PlanningAgentInputSchema,
     ExecutionOrchestratorInputSchema
 )
 import instructor
@@ -30,31 +30,35 @@ import os
 api_key = os.getenv("OPENAI_API_KEY") # Example
 shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key))
 
-# 1. Create atomic planning agent
+# 1. Create atomic investment planning agent
 planning_agent = create_atomic_planning_agent(shared_client, model="gpt-4")
 
-# 2. Generate structured plan
-planning_result = planning_agent.run(AtomicPlanningInputSchema(
-    alert="Your system alert here",
-    context="System context information"
+# 2. Generate structured investment research plan
+planning_result = planning_agent.run(PlanningAgentInputSchema(
+    investment_query="Analyze AAPL's growth prospects for the next 5 years",
+    research_context="Client is risk-averse, focus on fundamentals and market position"
 ))
 
 # 3. Execute plan (requires orchestrator setup)
 execution_orchestrator = ExecutionOrchestrator(orchestrator_core)
 execution_result = execution_orchestrator.run(
-    ExecutionOrchestratorInputSchema(plan=simple_plan)
+    ExecutionOrchestratorInputSchema(
+        investment_query=planning_result.investment_query,
+        research_context=planning_result.research_context,
+        planning_output=planning_result
+    )
 )
 ```
 
 ### Complete Workflow
 
 ```python
-from controllers.planning_agent import process_alert_with_atomic_planning
+from controllers.planning_agent import process_query_with_atomic_planning
 
-# One-line execution of complete workflow
-result = process_alert_with_atomic_planning(
-    alert="Critical: Service 'api-gateway' returning 500 errors",
-    context="Production API Gateway, error rate: 15%",
+# One-line execution of complete investment research workflow
+result = process_query_with_atomic_planning(
+    investment_query="Should I invest in MSFT for short-term gains?",
+    research_context="Client has 3-6 month holding period, high risk tolerance",
     model="gpt-4"
 )
 
@@ -85,42 +89,44 @@ controllers/planning_agent/
 
 ### 1. AtomicPlanningAgent
 
-**Purpose**: Generate structured SRE incident response plans
+**Purpose**: Generate structured investment research plans
 
 **Features**:
 - Uses Instructor for guaranteed structured outputs
-- Follows SRE best practices (investigate → diagnose → resolve)
-- Generates 3-5 actionable steps with reasoning
+- Follows investment research best practices (data gathering → analysis → valuation → recommendation)
+- Generates 2-4 actionable research steps with reasoning
 - Fully testable and debuggable
 
 **Input Schema**:
 ```python
-class AtomicPlanningInputSchema(BaseIOSchema):
-    alert: str = Field(..., description="The system alert to create a plan for")
-    context: str = Field(..., description="Contextual information about the system")
+class PlanningAgentInputSchema(BaseIOSchema):
+    investment_query: str = Field(..., description="The investment query to create a plan for")
+    research_context: str = Field(..., description="Contextual information for the research")
 ```
 
 **Output Schema**:
 ```python
 class AtomicPlanningOutputSchema(BaseIOSchema):
-    steps: List[PlanStepSchema] = Field(..., description="Generated plan steps (3-5)")
+    steps: List[PlanStepSchema] = Field(..., description="Generated plan steps (2-4)")
     reasoning: str = Field(..., description="Planning approach and rationale")
 ```
 
 ### 2. ExecutionOrchestrator
 
-**Purpose**: Execute plans step-by-step using the orchestration engine
+**Purpose**: Execute investment research plans step-by-step using the orchestration engine
 
 **Features**:
 - Pure execution logic (no planning)
-- Context accumulation across steps
+- Context accumulation across research steps
 - Detailed step-by-step results
 - Error handling and recovery
 
 **Input Schema**:
 ```python
 class ExecutionOrchestratorInputSchema(BaseIOSchema):
-    plan: SimplePlanSchema = Field(..., description="The plan to execute")
+    investment_query: str = Field(..., description="The original investment query")
+    research_context: str = Field(..., description="Contextual information for the research")
+    planning_output: AtomicPlanningOutputSchema = Field(..., description="Output from the planning agent")
 ```
 
 **Output Schema**:
@@ -139,15 +145,12 @@ Components are connected through matching schemas:
 ```python
 # Planning output → Execution input
 planning_result = planning_agent.run(planning_input)
-bridge_schema = AtomicPlanningToExecutionSchema(
-    alert=alert,
-    context=context,
-    steps=planning_result.steps,
-    reasoning=planning_result.reasoning
-)
-simple_plan = bridge_schema.to_simple_plan()
 execution_result = execution_orchestrator.run(
-    ExecutionOrchestratorInputSchema(plan=simple_plan)
+    ExecutionOrchestratorInputSchema(
+        investment_query=planning_input.investment_query,
+        research_context=planning_input.research_context,
+        planning_output=planning_result
+    )
 )
 ```
 
@@ -210,20 +213,18 @@ python controllers/planning_agent/atomic_executor.py
 
 ```mermaid
 graph TD
-    A[Alert Input] --> B[AtomicPlanningAgent]
+    A[Investment Query] --> B[AtomicPlanningAgent]
     B --> C[AtomicPlanningOutputSchema]
-    C --> D[AtomicPlanningToExecutionSchema]
-    D --> E[ExecutionOrchestrator]
-    E --> F[OrchestratorCore]
-    F --> G[Tool Execution]
-    G --> H[ExecutionOrchestratorOutputSchema]
-    H --> I[Final Summary]
+    C --> D[ExecutionOrchestrator]
+    D --> E[OrchestratorCore]
+    E --> F[Investment Tool Execution]
+    F --> G[ExecutionOrchestratorOutputSchema]
+    G --> H[Investment Research Summary]
     
     style B fill:#e8f5e8
-    style E fill:#e8f5e8
+    style D fill:#e8f5e8
     style C fill:#e3f2fd
-    style D fill:#e3f2fd
-    style H fill:#e3f2fd
+    style G fill:#e3f2fd
 ```
 
 ## Configuration
@@ -253,14 +254,17 @@ openai = ">=1.35.12,<2.0.0"
 
 ### 1. **Use Type Hints**
 ```python
-def process_alert(input_data: AtomicPlanningInputSchema) -> AtomicPlanningOutputSchema:
+def process_investment_query(input_data: PlanningAgentInputSchema) -> AtomicPlanningOutputSchema:
     return planning_agent.run(input_data)
 ```
 
 ### 2. **Validate Schemas**
 ```python
 # Always validate inputs
-input_schema = AtomicPlanningInputSchema(alert=alert, context=context)
+input_schema = PlanningAgentInputSchema(
+    investment_query="Analyze NVDA vs AMD in AI chip market",
+    research_context="Client interested in semiconductor exposure"
+)
 result = planning_agent.run(input_schema)
 assert isinstance(result, AtomicPlanningOutputSchema)
 ```
@@ -327,38 +331,38 @@ When adding new atomic components:
 
 ## Example Scenarios
 
-The system handles various SRE scenarios:
+The system handles various investment research scenarios:
 
-### 1. Database Issues
+### 1. Individual Stock Analysis
 ```python
-result = process_alert_with_atomic_planning(
-    alert="Critical failure: 'ExtPluginReplicationError: Code 7749 - Sync Timeout with AlphaNode'",
-    context="Primary PostgreSQL Database (Version 15.3). Plugin: experimental-geo-sync-plugin v0.1.2"
+result = process_query_with_atomic_planning(
+    investment_query="Assess AAPL's long-term growth potential for 5+ year hold",
+    research_context="AAPL has seen significant price appreciation. Need fundamental analysis and valuation."
 )
 ```
 
-### 2. Kubernetes Problems
+### 2. Comparative Analysis
 ```python
-result = process_alert_with_atomic_planning(
-    alert="Pod CrashLoopBackOff for service 'checkout-service'",
-    context="Kubernetes microservice (Java Spring Boot). Memory: 512Mi, CPU: 0.5 core"
+result = process_query_with_atomic_planning(
+    investment_query="Compare growth prospects of NVDA vs AMD in AI chip market",
+    research_context="Both are key players. Analyze market share, R&D, partnerships, and financials."
 )
 ```
 
-### 3. API Gateway Issues
+### 3. Short-term Investment Assessment
 ```python
-result = process_alert_with_atomic_planning(
-    alert="API endpoint /api/v2/orders returning 503 Service Unavailable",
-    context="API Gateway (Kong) and backend OrderService. Error rate: 5%"
+result = process_query_with_atomic_planning(
+    investment_query="Evaluate MSFT for 3-6 month holding period",
+    research_context="Client interested in short-term gains. MSFT recently announced AI initiatives."
 )
 ```
 
 ## Future Enhancements
 
-- [ ] Add streaming support for real-time plan generation
-- [ ] Implement plan validation and optimization
-- [ ] Add support for conditional execution flows
-- [ ] Create specialized planning agents for different incident types
-- [ ] Add metrics and observability for planning performance
-- [ ] Support for multi-step plan dependencies
-- [ ] Integration with external monitoring systems
+- [ ] Add streaming support for real-time investment research updates
+- [ ] Implement plan validation against available financial data sources
+- [ ] Add support for conditional execution flows based on research findings
+- [ ] Create specialized planning agents for different investment strategies (value, growth, quant)
+- [ ] Add metrics and observability for research plan effectiveness
+- [ ] Support for multi-step plan dependencies and research workflows
+- [ ] Integration with external financial data providers and market feeds

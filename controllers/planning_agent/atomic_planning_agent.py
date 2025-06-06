@@ -7,14 +7,7 @@ import openai
 from atomic_agents.agents.base_agent import BaseAgent, BaseAgentConfig
 from atomic_agents.lib.components.system_prompt_generator import SystemPromptGenerator
 from atomic_agents.lib.base.base_io_schema import BaseIOSchema
-from controllers.planning_agent.planner_schemas import PlanStepSchema
-
-
-class AtomicPlanningInputSchema(BaseIOSchema):
-    """Input schema for the Atomic Planning Agent."""
-    
-    alert: str = Field(..., description="The system alert to create a plan for")
-    context: str = Field(..., description="Contextual information about the system")
+from controllers.planning_agent.planner_schemas import PlanStepSchema, PlanningAgentInputSchema
 
 
 class AtomicPlanningOutputSchema(BaseIOSchema):
@@ -27,60 +20,6 @@ class AtomicPlanningOutputSchema(BaseIOSchema):
         max_items=4
     )
     reasoning: str = Field(..., description="Explanation of the planning approach and rationale")
-
-
-class AtomicPlanningAgent(BaseAgent):
-    """
-    Atomic Planning Agent that generates structured SRE incident response plans.
-    
-    This agent follows the Atomic Agents pattern with clear input/output schemas
-    and uses instructor for guaranteed structured outputs.
-    """
-    
-    def __init__(self, client, model: str = "gpt-4"):
-        """
-        Initialize the Atomic Planning Agent.
-        
-        Args:
-            client: Instructor-wrapped OpenAI client
-            model: Model name for LLM calls
-        """
-        system_prompt_generator = SystemPromptGenerator(
-            background=[
-                "You are an expert SRE (Site Reliability Engineering) planning agent.",
-                "You specialize in creating structured, actionable incident response plans.",
-                "You analyze system alerts and context to generate logical step-by-step resolution plans.",
-                "Your plans follow SRE best practices: investigation → diagnosis → resolution."
-            ],
-            steps=[
-                "1. Analyze the alert and context to understand the problem scope and severity",
-                "2. Identify initial investigation steps needed to gather system state information",
-                "3. Determine diagnostic steps to identify root causes and contributing factors", 
-                "4. Plan resolution steps or escalation procedures based on findings",
-                "5. Structure the plan as 3-5 clear, actionable steps in logical sequence"
-            ],
-            output_instructions=[
-                "Generate exactly 3-5 steps in logical order following investigation → diagnosis → resolution flow",
-                "Each step description should be specific, actionable, and focused on a single objective",
-                "Start with information gathering and system state assessment",
-                "Progress through root cause analysis and impact assessment",
-                "End with resolution actions or appropriate escalation procedures",
-                "Provide clear reasoning for your overall planning approach",
-                "Consider the specific technologies and systems mentioned in the context"
-            ]
-        )
-        
-        super().__init__(
-            config=BaseAgentConfig(
-                client=client,
-                model=model,
-                system_prompt_generator=system_prompt_generator,
-                input_schema=AtomicPlanningInputSchema,
-                output_schema=AtomicPlanningOutputSchema,
-                max_retries=3,
-                temperature=0.1  # Low temperature for consistent planning
-            )
-        )
 
 
 def create_atomic_planning_agent(client: instructor.Instructor, model: str = "gpt-4") -> BaseAgent:
@@ -100,29 +39,30 @@ def create_atomic_planning_agent(client: instructor.Instructor, model: str = "gp
             model=model,
             system_prompt_generator=SystemPromptGenerator(
                 background=[
-                    "You are an expert SRE (Site Reliability Engineering) planning agent.",
-                    "You specialize in creating structured, actionable incident response plans.",
-                    "You analyze system alerts and context to generate logical step-by-step resolution plans.",
-                    "Your plans follow SRE best practices: investigation → diagnosis → resolution."
+                    "You are an expert investment research planning agent.",
+                    "You specialize in creating structured, actionable investment research plans.",
+                    "You analyze investment queries and research context to generate logical step-by-step research plans.",
+                    "Your plans follow investment research best practices: data gathering → financial analysis → valuation → risk assessment → recommendation."
                 ],
                 steps=[
-                    "1. Analyze the alert and context to understand the problem scope and severity",
-                    "2. Identify initial investigation steps needed to gather system state information",
-                    "3. Determine diagnostic steps to identify root causes and contributing factors",
-                    "4. Plan resolution steps or escalation procedures based on findings",
-                    "5. Structure the plan as 3-5 clear, actionable steps in logical sequence"
+                    "1. Analyze the investment query and research context to understand the core research question and available information.",
+                    "2. Identify key information to gather (e.g., financial statements, industry reports, market data, news).",
+                    "3. Plan steps for fundamental analysis (e.g., ratio analysis, trend analysis, competitive landscape).",
+                    "4. Outline steps for valuation (e.g., DCF, comparables, precedent transactions) if applicable.",
+                    "5. Define steps for risk assessment and formulating a final recommendation or outlook.",
+                    "6. Structure the plan as 2-4 clear, actionable steps in logical sequence."
                 ],
                 output_instructions=[
-                    "Generate exactly 3-5 steps in logical order following investigation → diagnosis → resolution flow",
-                    "Each step description should be specific, actionable, and focused on a single objective",
-                    "Start with information gathering and system state assessment",
-                    "Progress through root cause analysis and impact assessment",
-                    "End with resolution actions or appropriate escalation procedures",
-                    "Provide clear reasoning for your overall planning approach",
-                    "Consider the specific technologies and systems mentioned in the context"
+                    "Generate exactly 2-4 steps in logical order following a data gathering → analysis → valuation/synthesis → recommendation flow.",
+                    "Each step description should be specific, actionable, and focused on a single research objective.",
+                    "Start with understanding the query and gathering necessary data.",
+                    "Progress through analysis of the company/asset, its financials, and market position.",
+                    "End with steps to synthesize findings, assess risks, and form a conclusion or recommendation.",
+                    "Provide clear reasoning for your overall planning approach.",
+                    "Consider the specific company, sector, and type of investment query."
                 ]
             ),
-            input_schema=AtomicPlanningInputSchema,
+            input_schema=PlanningAgentInputSchema, # Use schema from planner_schemas
             output_schema=AtomicPlanningOutputSchema,
             max_retries=3,
             temperature=0.1  # Low temperature for consistent planning
@@ -147,9 +87,9 @@ if __name__ == "__main__":
     )
     
     # Example input
-    test_input = AtomicPlanningInputSchema(
-        alert="Critical failure: 'ExtPluginReplicationError: Code 7749 - Sync Timeout with AlphaNode' in 'experimental-geo-sync-plugin v0.1.2' on db-primary.",
-        context="System: Primary PostgreSQL Database (Version 15.3). Plugin: 'experimental-geo-sync-plugin v0.1.2' (third-party, integrated yesterday for PoC). Service: Attempting geo-replicated read-replica setup."
+    test_input = PlanningAgentInputSchema( # Use schema from planner_schemas
+        investment_query="Should I invest in AAPL stock for long-term growth?",
+        research_context="AAPL recently launched a new product line. Current market sentiment is mixed. I have access to their latest 10-K and analyst reports."
     )
     
     # Run planning

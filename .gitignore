@@ -128,6 +128,7 @@ chroma_data/
 chromadb_tmp/
 chroma_db/
 sre_chroma_db/
+investment_chroma_db/
 
 # IDEs and editors
 .vscode/

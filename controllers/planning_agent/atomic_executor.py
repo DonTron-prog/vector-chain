@@ -9,32 +9,33 @@ from rich.console import Console
 from rich.panel import Panel
 from orchestration_engine import ConfigManager, ToolManager, OrchestratorCore, create_orchestrator_agent
 from controllers.planning_agent.atomic_planning_agent import (
-    AtomicPlanningAgent,
-    AtomicPlanningInputSchema,
     create_atomic_planning_agent
 )
+# Import the correct input schema from planner_schemas
+from controllers.planning_agent.planner_schemas import PlanningAgentInputSchema
 from controllers.planning_agent.execution_orchestrator import (
     ExecutionOrchestrator,
     ExecutionOrchestratorInputSchema
 )
+
 from controllers.planning_agent.planner_schemas import (
     PlanningAgentOutputSchema,
     SimplePlanSchema
 )
 
 
-def process_alert_with_atomic_planning(alert: str, context: str = "", model: str = "mistral/ministral-8b") -> PlanningAgentOutputSchema:
+def process_query_with_atomic_planning(investment_query: str, research_context: str = "", model: str = "mistral/ministral-8b") -> PlanningAgentOutputSchema:
     """
-    Process an alert using the atomic planning agent architecture.
+    Process an investment query using the atomic planning agent architecture.
     
     This function demonstrates the atomic agents pattern:
-    1. AtomicPlanningAgent generates structured plans
-    2. ExecutionOrchestrator executes the plans
+    1. AtomicPlanningAgent generates structured investment research plans
+    2. ExecutionOrchestrator executes these plans
     3. Clean separation of concerns with schema-based chaining
     
     Args:
-        alert: The system alert to process
-        context: Contextual information about the system
+        investment_query: The investment query to process
+        research_context: Contextual information for the research
         model: Model name for LLM calls
         
     Returns:
@@ -59,9 +60,9 @@ def process_alert_with_atomic_planning(alert: str, context: str = "", model: str
     orchestrator_core = OrchestratorCore(orchestrator_agent, tool_manager)
     
     console.print(Panel(
-        "[bold blue]🤖 Atomic Planning Agent[/bold blue]\n"
-        "Using Atomic Agents framework for structured planning...",
-        title="Planning Phase",
+        "[bold blue]🤖 Atomic Investment Planning Agent[/bold blue]\n"
+        "Using Atomic Agents framework for structured investment research planning...",
+        title="Investment Planning Phase",
         border_style="blue"
     ))
     
@@ -72,9 +73,9 @@ def process_alert_with_atomic_planning(alert: str, context: str = "", model: str
     )
     
     # Step 2: Generate plan using atomic planning agent
-    planning_input = AtomicPlanningInputSchema(
-        alert=alert,
-        context=context
+    planning_input = PlanningAgentInputSchema( # Use the schema from planner_schemas
+        investment_query=investment_query,
+        research_context=research_context
     )
     
     try:
@@ -103,15 +104,15 @@ def process_alert_with_atomic_planning(alert: str, context: str = "", model: str
         # Step 3: Execute plan using execution orchestrator with direct integration
         execution_orchestrator = ExecutionOrchestrator(orchestrator_core)
         execution_input = ExecutionOrchestratorInputSchema(
-            alert=alert,
-            context=context,
+            investment_query=investment_query,
+            research_context=research_context,
             planning_output=planning_result
         )
         
         execution_result = execution_orchestrator.run(execution_input)
         
         # Step 4: Generate final summary
-        final_summary = f"""# Atomic Planning Agent Execution Summary
+        final_summary = f"""# Atomic Investment Planning Agent Execution Summary
 
 ## Planning Phase
 **Reasoning:** {planning_result.reasoning}
@@ -129,9 +130,9 @@ def process_alert_with_atomic_planning(alert: str, context: str = "", model: str
 """
         
         # Create a simple plan for the final result with execution results
-        simple_plan = SimplePlanSchema(
-            alert=alert,
-            context=context,
+        simple_plan = SimplePlanSchema( # This schema is already updated with investment_query and research_context
+            investment_query=investment_query,
+            research_context=research_context,
             steps=planning_result.steps,
             accumulated_knowledge=execution_result.accumulated_knowledge
         )
@@ -156,9 +157,9 @@ def process_alert_with_atomic_planning(alert: str, context: str = "", model: str
         ))
         
         # Return error result
-        error_plan = SimplePlanSchema(
-            alert=alert,
-            context=context,
+        error_plan = SimplePlanSchema( # This schema is already updated
+            investment_query=investment_query,
+            research_context=research_context,
             steps=[],
             accumulated_knowledge=f"Error occurred: {str(e)}"
         )
@@ -172,41 +173,41 @@ def process_alert_with_atomic_planning(alert: str, context: str = "", model: str
 
 def run_atomic_planning_scenarios(example_data, model: str = "mistral/ministral-8b"):
     """
-    Run example scenarios using the atomic planning agent.
+    Run example investment research scenarios using the atomic planning agent.
     
     Args:
-        example_data: List of alert scenarios
+        example_data: List of investment query scenarios
         model: Model name for LLM calls
     """
     console = Console()
     
     for i, scenario in enumerate(example_data, 1):
         console.print(Panel(
-            f"[bold blue]Atomic Planning Scenario {i}[/bold blue]\n"
-            f"[yellow]Alert:[/yellow] {scenario['alert']}\n"
-            f"[yellow]Context:[/yellow] {scenario['context']}",
-            title="🤖 Atomic SRE Planning Agent",
+            f"[bold blue]Atomic Investment Planning Scenario {i}[/bold blue]\n"
+            f"[yellow]Investment Query:[/yellow] {scenario['investment_query']}\n"
+            f"[yellow]Research Context:[/yellow] {scenario['research_context']}",
+            title="🤖 Atomic Investment Planning Agent",
             border_style="blue"
         ))
         
         try:
-            result = process_alert_with_atomic_planning(
-                scenario["alert"],
-                scenario["context"],
+            result = process_query_with_atomic_planning(
+                scenario["investment_query"],
+                scenario["research_context"],
                 model
             )
             
             # Display the summary
             console.print(Panel(
                 result.summary,
-                title="📋 Atomic Planning Execution Summary",
+                title="📋 Atomic Investment Planning Execution Summary",
                 border_style="green" if result.success else "red"
             ))
             
         except Exception as e:
             console.print(Panel(
                 f"[red]Error processing scenario: {e}[/red]",
-                title="❌ Atomic Planning Error",
+                title="❌ Atomic Investment Planning Error",
                 border_style="red"
             ))
         
@@ -217,36 +218,36 @@ def main():
     """Main entry point for the atomic planning agent."""
     import sys
     
-    # Define example scenarios
-    example_alerts = [
+    # Define example investment research scenarios
+    example_investment_queries = [
         {
-            "alert": "Critical failure: 'ExtPluginReplicationError: Code 7749 - Sync Timeout with AlphaNode' in 'experimental-geo-sync-plugin v0.1.2' on db-primary.",
-            "context": "System: Primary PostgreSQL Database (Version 15.3). Plugin: 'experimental-geo-sync-plugin v0.1.2' (third-party, integrated yesterday for PoC). Service: Attempting geo-replicated read-replica setup. Internal Documentation: Confirmed NO internal documentation or runbooks exist for this experimental plugin or its error codes. Vendor documentation for v0.1.2 is sparse."
+            "investment_query": "Assess the short-term investment potential of MSFT.",
+            "research_context": "Client is looking for a 3-6 month holding period. MSFT recently announced new AI initiatives. Access to latest 10-Q and analyst reports available."
         },
         {
-            "alert": "Pod CrashLoopBackOff for service 'checkout-service' in Kubernetes cluster 'prod-east-1'. Error log snippet: 'java.lang.OutOfMemoryError: Java heap space'.",
-            "context": "System: Kubernetes microservice (Java Spring Boot). Service: Checkout processing. Resource limits: Memory 512Mi, CPU 0.5 core. Traffic: Experiencing 3x normal load due to flash sale."
+            "investment_query": "Is AAPL overvalued at its current price for a long-term hold (5+ years)?",
+            "research_context": "AAPL has seen significant stock price appreciation. Concerns about future growth drivers. Latest 10-K, earnings call transcripts, and competitor analysis needed."
         },
         {
-            "alert": "API endpoint /api/v2/orders returning 503 Service Unavailable for 5% of requests over the last 10 minutes. Latency P99 is 2500ms.",
-            "context": "System: API Gateway (Kong) and backend OrderService. Service: Order placement. Dependencies: InventoryService, PaymentService. Current error rate threshold: < 1%. Latency SLO: P99 < 800ms."
+            "investment_query": "Compare the growth prospects of NVDA vs AMD in the AI chip market.",
+            "research_context": "Both companies are key players. Need to analyze market share, R&D, partnerships, and financial performance. Access to industry reports and company filings."
         }
     ]
     
     console = Console()
     console.print(Panel(
-        "[bold blue]🤖 Atomic SRE Planning Agent[/bold blue]\n"
-        "Running example scenarios with atomic agents architecture...\n"
+        "[bold blue]🤖 Atomic Investment Planning Agent[/bold blue]\n"
+        "Running example investment research scenarios with atomic agents architecture...\n"
         "[green]✨ Features:[/green]\n"
         "• Structured planning with guaranteed schemas\n"
         "• Separation of planning and execution concerns\n"
         "• Schema-based component chaining\n"
         "• Full transparency and debuggability",
-        title="Atomic Planning Agent Executor",
+        title="Atomic Investment Planning Agent Executor",
         border_style="blue"
     ))
     
-    run_atomic_planning_scenarios(example_alerts)
+    run_atomic_planning_scenarios(example_investment_queries)
 
 
 if __name__ == "__main__":

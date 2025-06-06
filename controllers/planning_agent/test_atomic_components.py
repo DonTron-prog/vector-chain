@@ -7,15 +7,11 @@ import os
 from rich.console import Console
 from rich.panel import Panel
 from controllers.planning_agent.atomic_planning_agent import (
-    AtomicPlanningAgent,
-    AtomicPlanningInputSchema,
     create_atomic_planning_agent
 )
-from controllers.planning_agent.execution_orchestrator import (
-    ExecutionOrchestrator,
-    ExecutionOrchestratorInputSchema
-)
+# Import the correct input schema from planner_schemas
 from controllers.planning_agent.planner_schemas import (
+    PlanningAgentInputSchema,
     SimplePlanSchema,
     PlanStepSchema
 )
@@ -40,25 +36,27 @@ def test_atomic_planning_agent():
     
     try:
         # Create a shared client
+        import openai # Ensure openai is imported
+        import instructor # Ensure instructor is imported
         shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key))
 
         # Create atomic planning agent using the factory function
-        console.print("🔧 Creating atomic planning agent...")
+        console.print("🔧 Creating atomic investment planning agent...")
         planning_agent = create_atomic_planning_agent(shared_client, "gpt-4o-mini")
-        console.print("✅ Atomic planning agent created successfully")
+        console.print("✅ Atomic investment planning agent created successfully")
         
         # Test input
-        test_input = AtomicPlanningInputSchema(
-            alert="Test alert: Service 'api-gateway' returning 500 errors",
-            context="System: Production API Gateway. Error rate: 15%. Normal rate: <1%."
+        test_input = PlanningAgentInputSchema( # Use schema from planner_schemas
+            investment_query="Assess NVDA stock for short-term hold.",
+            research_context="Client has high risk tolerance. NVDA recently had an earnings call."
         )
         
-        console.print("📝 Testing with sample alert...")
-        console.print(f"Alert: {test_input.alert}")
-        console.print(f"Context: {test_input.context}")
+        console.print("📝 Testing with sample investment query...")
+        console.print(f"Investment Query: {test_input.investment_query}")
+        console.print(f"Research Context: {test_input.research_context}")
         
         # Run planning
-        console.print("\n🚀 Running atomic planning agent...")
+        console.print("\n🚀 Running atomic investment planning agent...")
         result = planning_agent.run(test_input)
         
         # Validate result
@@ -89,17 +87,17 @@ def test_execution_orchestrator():
     
     try:
         # Create a mock plan for testing
-        mock_plan = SimplePlanSchema(
-            alert="Test alert: Service 'api-gateway' returning 500 errors",
-            context="System: Production API Gateway. Error rate: 15%. Normal rate: <1%.",
+        mock_plan = SimplePlanSchema( # SimplePlanSchema now uses investment_query and research_context
+            investment_query="Is GOOG a buy after recent product launch?",
+            research_context="Considering long-term investment. Product reviews are mixed.",
             steps=[
-                PlanStepSchema(description="Check service health status"),
-                PlanStepSchema(description="Review recent error logs"),
-                PlanStepSchema(description="Identify root cause of errors")
+                PlanStepSchema(description="Gather GOOG's latest financial statements (10-K, 10-Q)"),
+                PlanStepSchema(description="Analyze GOOG's revenue growth and profit margins"),
+                PlanStepSchema(description="Research market sentiment and analyst ratings for GOOG")
             ]
         )
         
-        console.print("📝 Created mock plan with 3 steps")
+        console.print("📝 Created mock investment research plan with 3 steps")
         for i, step in enumerate(mock_plan.steps, 1):
             console.print(f"  {i}. {step.description}")
         
@@ -107,9 +105,20 @@ def test_execution_orchestrator():
         console.print("\n⚠️ Execution orchestrator requires OrchestratorCore setup")
         console.print("✅ Execution orchestrator structure validated")
         
-        # Test input schema validation
-        test_input = ExecutionOrchestratorInputSchema(plan=mock_plan)
-        console.print("✅ Input schema validation passed")
+        # Test input schema validation for ExecutionOrchestrator
+        # ExecutionOrchestratorInputSchema expects investment_query, research_context, and planning_output
+        # We'll create a mock planning_output for this
+        from controllers.planning_agent.atomic_planning_agent import AtomicPlanningOutputSchema as AgentOutput # Alias to avoid conflict
+        mock_planning_output = AgentOutput(
+            steps=mock_plan.steps,
+            reasoning="Initial mock reasoning for execution test."
+        )
+        test_exec_input = ExecutionOrchestratorInputSchema(
+            investment_query=mock_plan.investment_query,
+            research_context=mock_plan.research_context,
+            planning_output=mock_planning_output
+        )
+        console.print("✅ Execution Orchestrator input schema validation passed")
         
         return True
         
@@ -130,35 +139,35 @@ def test_schema_chaining():
     
     try:
         # Create mock planning result
-        from controllers.planning_agent.atomic_planning_agent import AtomicPlanningOutputSchema
+        from controllers.planning_agent.atomic_planning_agent import AtomicPlanningOutputSchema as AgentOutput # Alias
         
-        mock_planning_result = AtomicPlanningOutputSchema(
+        mock_planning_result = AgentOutput(
             steps=[
-                PlanStepSchema(description="Investigate system metrics"),
-                PlanStepSchema(description="Check application logs"),
-                PlanStepSchema(description="Implement fix or escalate")
+                PlanStepSchema(description="Analyze AAPL's competitive advantages."),
+                PlanStepSchema(description="Review AAPL's R&D investments."),
+                PlanStepSchema(description="Formulate buy/sell/hold recommendation for AAPL.")
             ],
-            reasoning="Following standard SRE incident response: investigate → diagnose → resolve"
+            reasoning="Standard investment research workflow: analysis → synthesis → recommendation."
         )
         
-        console.print("📝 Created mock planning result")
+        console.print("📝 Created mock investment planning result")
         console.print(f"Steps: {len(mock_planning_result.steps)}")
         console.print(f"Reasoning: {mock_planning_result.reasoning}")
         
         # Test direct integration - create execution input directly
         execution_input = ExecutionOrchestratorInputSchema(
-            alert="Test alert",
-            context="Test context",
+            investment_query="Test investment query for chaining",
+            research_context="Test research context for chaining",
             planning_output=mock_planning_result
         )
         
-        console.print("✅ Direct execution input created successfully")
-        console.print(f"Planning output has {len(mock_planning_result.steps)} steps")
-        console.print(f"Reasoning: {mock_planning_result.reasoning[:50]}...")
+        console.print("✅ Direct execution input for chaining created successfully")
+        console.print(f"Planning output has {len(execution_input.planning_output.steps)} steps")
+        console.print(f"Reasoning: {execution_input.planning_output.reasoning[:70]}...")
         
-        # Test execution input
-        execution_input = ExecutionOrchestratorInputSchema(plan=simple_plan)
-        console.print("✅ Execution input schema validated")
+        # This specific line was problematic as simple_plan was not defined here.
+        # The above instantiation of execution_input already tests the schema.
+        # console.print("✅ Execution input schema validated") # Redundant if above passes
         
         return True
         
@@ -172,8 +181,8 @@ def test_all_components():
     console = Console()
     
     console.print(Panel(
-        "[bold blue]🧪 Atomic Agents Component Test Suite[/bold blue]\n"
-        "Testing all atomic components in isolation",
+        "[bold blue]🧪 Atomic Investment Agents Component Test Suite[/bold blue]\n"
+        "Testing all atomic investment components in isolation",
         title="Test Suite",
         border_style="blue"
     ))
@@ -213,7 +222,7 @@ def test_all_components():
     console.print(f"\nOverall: {passed}/{len(results)} tests passed")
     
     if passed == len(results):
-        console.print("[bold green]🎉 All tests passed! Atomic Agents components are working correctly.[/bold green]")
+        console.print("[bold green]🎉 All tests passed! Atomic Investment Agents components are working correctly.[/bold green]")
     else:
         console.print("[bold yellow]⚠️ Some tests failed. Check the output above for details.[/bold yellow]")
 
@@ -223,7 +232,7 @@ def main():
     console = Console()
     
     console.print(Panel(
-        "[bold blue]🧪 Atomic Agents Test Suite[/bold blue]\n"
+        "[bold blue]🧪 Atomic Investment Agents Test Suite[/bold blue]\n"
         "Choose which components to test",
         title="Test Menu",
         border_style="blue"

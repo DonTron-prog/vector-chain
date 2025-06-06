@@ -1,66 +1,67 @@
-# Planning Agent with Atomic Agents
+# Investment Research Planning Agent with Atomic Agents
 
-This module provides both legacy and modern Atomic Agents implementations for SRE incident planning and execution.
+This module provides an Atomic Agents implementation for investment research planning and execution. The legacy SRE-focused `SimplePlanningAgent` has been deprecated by this more robust and domain-specific approach.
 
 ## Architecture Overview
 
-### Legacy SimplePlanningAgent
-- **File**: [`simple_agent.py`](simple_agent.py)
-- **Approach**: Monolithic class with mixed responsibilities
-- **Planning**: Manual text parsing and string manipulation
-- **Execution**: Direct orchestrator integration
-- **Issues**: Hard to test, debug, and extend
-
-### Atomic Agents Architecture
-- **Planning**: [`atomic_planning_agent.py`](atomic_planning_agent.py) - Pure planning with structured outputs
-- **Execution**: [`execution_orchestrator.py`](execution_orchestrator.py) - Pure execution logic
-- **Schemas**: [`planner_schemas.py`](planner_schemas.py) - Structured I/O contracts
-- **Benefits**: Modular, testable, debuggable, composable
+### Atomic Agents Architecture for Investment Research
+- **Planning**: [`atomic_planning_agent.py`](atomic_planning_agent.py) - Generates structured investment research plans.
+- **Execution**: [`execution_orchestrator.py`](execution_orchestrator.py) - Executes these research plans step-by-step.
+- **Schemas**: [`planner_schemas.py`](planner_schemas.py) - Defines the structured Pydantic schemas for inputs and outputs (e.g., `PlanningAgentInputSchema`, `InvestmentPlanSchema`).
+- **Benefits**: Modular, testable, debuggable, and composable, tailored for investment research workflows.
 
 ## Quick Start
 
-### Using Atomic Agents (Recommended)
+### Using the Atomic Investment Planning Agent
 
 ```python
 from controllers.planning_agent import (
     create_atomic_planning_agent,
     ExecutionOrchestrator,
-    AtomicPlanningInputSchema,
+    PlanningAgentInputSchema, # Updated schema
     ExecutionOrchestratorInputSchema
 )
+# Assuming OrchestratorCore and other necessary components are set up
+# from orchestration_engine import OrchestratorCore, ConfigManager, ToolManager, create_orchestrator_agent
 import instructor
 import openai
 import os
 
 # 0. Create a shared client (ensure api_key is available)
-api_key = os.getenv("OPENAI_API_KEY") # Example
-shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key))
+# Example: api_key = os.getenv("OPENAI_API_KEY")
+# shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key))
 
-# 1. Create atomic planning agent
-planning_agent = create_atomic_planning_agent(shared_client, model="gpt-4")
+# --- OrchestratorCore setup (example, adapt as needed) ---
+# config_manager = ConfigManager.load_configuration()
+# tools = ConfigManager.initialize_tools(config_manager)
+# orchestrator_agent_instance = create_orchestrator_agent(shared_client, model="gpt-4o-mini") # Or your chosen model
+# tool_manager_instance = ToolManager(tools)
+# orchestrator_core_instance = OrchestratorCore(orchestrator_agent_instance, tool_manager_instance)
+# --- End OrchestratorCore setup ---
 
-# 2. Generate structured plan
-planning_result = planning_agent.run(AtomicPlanningInputSchema(
-    alert="Your system alert here",
-    context="System context information"
-))
 
-# 3. Execute plan (requires orchestrator setup)
-execution_orchestrator = ExecutionOrchestrator(orchestrator_core)
-execution_result = execution_orchestrator.run(
-    ExecutionOrchestratorInputSchema(plan=simple_plan)
-)
+# 1. Create atomic investment planning agent
+# planning_agent = create_atomic_planning_agent(shared_client, model="gpt-4o-mini") # Or your chosen model
+
+# 2. Generate structured investment research plan
+# planning_input = PlanningAgentInputSchema(
+#     investment_query="Analyze the growth prospects of AAPL for the next 5 years.",
+#     research_context="Client is risk-averse. Focus on fundamentals and market position. Access to 10-K, 10-Q, and analyst reports."
+# )
+# planning_result = planning_agent.run(planning_input)
+
+# 3. Execute plan (requires orchestrator_core_instance from above)
+# execution_orchestrator = ExecutionOrchestrator(orchestrator_core_instance)
+# execution_input = ExecutionOrchestratorInputSchema(
+# investment_query=planning_input.investment_query,
+# research_context=planning_input.research_context,
+# planning_output=planning_result
+# )
+# execution_result = execution_orchestrator.run(execution_input)
+# print(execution_result.final_summary)
 ```
 
-### Using Legacy SimplePlanningAgent
-
-```python
-from controllers.planning_agent import SimplePlanningAgent
-
-# Legacy approach
-planning_agent = SimplePlanningAgent(orchestrator_core, openai_client, model)
-result = planning_agent.execute_plan(alert, context)
-```
+*(Note: The legacy `SimplePlanningAgent` for SRE is no longer the primary focus of this module.)*
 
 ## File Structure
 
@@ -70,88 +71,93 @@ controllers/planning_agent/
 ├── __init__.py                        # Module exports
 ├── planner_schemas.py                 # Pydantic schemas
 │
-├── # Legacy Implementation
-├── simple_agent.py                    # Legacy monolithic agent
-├── executor.py                        # Legacy executor
+├── # (Legacy SRE files like simple_agent.py, executor.py, demo_atomic_vs_legacy.py may be removed or archived)
 │
-├── # Atomic Agents Implementation  
-├── atomic_planning_agent.py           # Pure planning agent
-├── execution_orchestrator.py          # Pure execution logic
-├── atomic_executor.py                 # Atomic workflow orchestration
+├── # Atomic Agents Implementation for Investment Research
+├── atomic_planning_agent.py           # Generates investment research plans
+├── execution_orchestrator.py          # Executes investment research plans
+├── atomic_executor.py                 # Main entry point for investment planning workflow
 │
-└── # Testing & Demo
-    ├── test_atomic_components.py      # Component tests
-    └── demo_atomic_vs_legacy.py       # Architecture comparison
+└── # Testing
+    └── test_atomic_components.py      # Component tests for investment planning
 ```
 
 ## Key Components
 
-### 1. AtomicPlanningAgent
+### 1. AtomicPlanningAgent (Investment Focus)
 
-**Purpose**: Generate structured SRE incident response plans
-
-**Features**:
-- Uses Instructor for guaranteed structured outputs
-- Follows SRE best practices (investigate → diagnose → resolve)
-- Generates 3-5 actionable steps with reasoning
-- Fully testable and debuggable
-
-**Input Schema**:
-```python
-class AtomicPlanningInputSchema(BaseIOSchema):
-    alert: str = Field(..., description="The system alert to create a plan for")
-    context: str = Field(..., description="Contextual information about the system")
-```
-
-**Output Schema**:
-```python
-class AtomicPlanningOutputSchema(BaseIOSchema):
-    steps: List[PlanStepSchema] = Field(..., description="Generated plan steps (3-5)")
-    reasoning: str = Field(..., description="Planning approach and rationale")
-```
-
-### 2. ExecutionOrchestrator
-
-**Purpose**: Execute plans step-by-step using the orchestration engine
+**Purpose**: Generate structured investment research plans.
 
 **Features**:
-- Pure execution logic (no planning)
-- Context accumulation across steps
-- Detailed step-by-step results
-- Error handling and recovery
+- Uses Instructor for guaranteed structured outputs (via `AtomicPlanningOutputSchema`).
+- Follows investment research best practices (e.g., data gathering → financial analysis → valuation → risk assessment → recommendation).
+- Generates 2-4 actionable research steps with clear reasoning.
+- Fully testable and debuggable.
 
-**Input Schema**:
+**Input Schema** (from `planner_schemas.py`):
+```python
+class PlanningAgentInputSchema(BaseIOSchema): # Note: Renamed from AtomicPlanningInputSchema in atomic_planning_agent.py
+    investment_query: str = Field(..., description="The investment query to create a plan for")
+    research_context: str = Field(..., description="Contextual information for the research")
+```
+
+**Output Schema** (from `atomic_planning_agent.py`):
+```python
+class AtomicPlanningOutputSchema(BaseIOSchema): # This is the direct output of the agent
+    steps: List[PlanStepSchema] = Field(
+        ...,
+        description="Generated plan steps in logical order (2-4 steps)", # Updated count
+        min_items=2,
+        max_items=4
+    )
+    reasoning: str = Field(..., description="Explanation of the planning approach and rationale")
+```
+
+### 2. ExecutionOrchestrator (Investment Focus)
+
+**Purpose**: Execute investment research plans step-by-step using the main orchestration engine.
+
+**Features**:
+- Pure execution logic, taking a plan generated by `AtomicPlanningAgent`.
+- Accumulates knowledge and context across research steps.
+- Provides detailed results for each executed step.
+- Handles errors during step execution.
+
+**Input Schema** (from `execution_orchestrator.py`):
 ```python
 class ExecutionOrchestratorInputSchema(BaseIOSchema):
-    plan: SimplePlanSchema = Field(..., description="The plan to execute")
+    investment_query: str = Field(..., description="The original investment query")
+    research_context: str = Field(..., description="Contextual information for the research")
+    planning_output: AtomicPlanningOutputSchema = Field(..., description="Output from the planning agent") # Takes direct output
 ```
 
-**Output Schema**:
+**Output Schema** (from `execution_orchestrator.py`):
 ```python
 class ExecutionOrchestratorOutputSchema(BaseIOSchema):
-    executed_steps: List[StepExecutionResult] = Field(...)
-    final_summary: str = Field(...)
-    success: bool = Field(...)
-    accumulated_knowledge: str = Field(...)
+    executed_steps: List[StepExecutionResult] = Field(...) # Contains results of each step
+    final_summary: str = Field(...) # Overall summary of the research execution
+    success: bool = Field(...) # Whether the overall execution was successful
+    accumulated_knowledge: str = Field(...) # Knowledge gathered throughout the execution
 ```
 
 ### 3. Schema-Based Chaining
 
-Components are connected through matching schemas:
+Components are connected directly through their defined Pydantic schemas:
 
 ```python
-# Planning output → Execution input
-planning_result = planning_agent.run(planning_input)
-bridge_schema = AtomicPlanningToExecutionSchema(
-    alert=alert,
-    context=context,
-    steps=planning_result.steps,
-    reasoning=planning_result.reasoning
-)
-simple_plan = bridge_schema.to_simple_plan()
-execution_result = execution_orchestrator.run(
-    ExecutionOrchestratorInputSchema(plan=simple_plan)
-)
+# planning_result (AtomicPlanningOutputSchema) from planning_agent.run()
+# is directly used in ExecutionOrchestratorInputSchema.
+
+# Example:
+# planning_input = PlanningAgentInputSchema(investment_query="...", research_context="...")
+# planning_result = planning_agent.run(planning_input)
+
+# execution_input = ExecutionOrchestratorInputSchema(
+#     investment_query=planning_input.investment_query,
+#     research_context=planning_input.research_context,
+#     planning_output=planning_result
+# )
+# execution_result = execution_orchestrator.run(execution_input)
 ```
 
 ## Running Examples
@@ -159,98 +165,59 @@ execution_result = execution_orchestrator.run(
 ### 1. Test Components
 
 ```bash
-# Test individual atomic components
+# Test individual atomic investment planning components
 python controllers/planning_agent/test_atomic_components.py
 ```
 
-### 2. Compare Architectures
+*(Legacy SRE demos and executors are no longer the focus.)*
+
+### 2. Run Atomic Investment Executor
 
 ```bash
-# Interactive demo comparing legacy vs atomic approaches
-python controllers/planning_agent/demo_atomic_vs_legacy.py
-```
-
-### 3. Run Legacy Executor
-
-```bash
-# Run legacy SimplePlanningAgent
-python controllers/planning_agent/executor.py
-```
-
-### 4. Run Atomic Executor
-
-```bash
-# Run atomic agents workflow
+# Run atomic investment research workflow
 python controllers/planning_agent/atomic_executor.py
 ```
 
-## Benefits of Atomic Agents Approach
+## Benefits of Atomic Agents Approach (for Investment Research)
 
 ### 🔍 **Transparency**
-- Clear input/output contracts for every component
-- No hidden "magic" or black boxes
-- Easy to understand data flow
+- Clear input/output Pydantic schemas for each component (planning, execution).
+- No hidden "magic"; data flow is explicit.
+- Easy to understand how an investment query is processed into a plan and then executed.
 
 ### 🧪 **Testability**
-- Unit test each atomic component independently
-- Mock inputs/outputs with Pydantic schemas
-- Isolated testing of planning vs execution logic
+- Unit test the `AtomicPlanningAgent` and `ExecutionOrchestrator` independently.
+- Mock inputs/outputs easily using their Pydantic schemas.
+- Isolated testing of investment plan generation vs. plan execution logic.
 
 ### 🐛 **Debuggability**
-- Set breakpoints on specific atomic components
-- Inspect exact schemas at each step
-- Clear separation of concerns
+- Set breakpoints within the planning or execution components.
+- Inspect the exact Pydantic schema data at each stage of the research process.
+- Clear separation of concerns simplifies identifying issues.
 
 ### 🔧 **Modularity**
-- Swap planning strategies without changing execution
-- Replace execution engines without touching planning
-- Mix and match components as needed
+- Swap investment planning strategies (e.g., different LLM prompts or models for `AtomicPlanningAgent`) without altering the `ExecutionOrchestrator`.
+- Modify how research steps are executed (e.g., different tools in the main orchestrator) without changing the planning agent.
+- Potentially reuse components for different types of financial analysis.
 
 ### 📊 **Reliability**
-- Guaranteed structured outputs with Instructor
-- Pydantic validation catches schema errors
-- Consistent data formats across components
+- Instructor ensures the `AtomicPlanningAgent` produces structured output matching `AtomicPlanningOutputSchema`.
+- Pydantic validation at each component boundary catches data inconsistencies early.
+- Consistent data formats (defined by schemas) across the planning and execution pipeline.
 
 ### 🔗 **Composability**
-- Chain components through schema matching
-- Build complex workflows from simple atoms
-- Reuse components in different contexts
+- Components are chained via their Pydantic schemas (output of planner feeds input of executor).
+- Build complex investment research workflows from these atomic building blocks.
+- Reuse these specialized agents within larger financial analysis systems.
 
-## Migration Guide
+## (Migration Guide from Legacy SRE is less relevant now)
 
-### From Legacy to Atomic
+The focus has shifted to the new Atomic Agents architecture for investment research. If migrating from a previous SRE-based system:
 
-1. **Replace planning logic**:
-   ```python
-   # Old
-   planning_agent = SimplePlanningAgent(...)
-   
-   # New
-   # shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)) # Example
-   planning_agent = create_atomic_planning_agent(shared_client, model)
-   ```
-
-2. **Separate execution**:
-   ```python
-   # Old
-   result = planning_agent.execute_plan(alert, context)
-   
-   # New
-   planning_result = planning_agent.run(AtomicPlanningInputSchema(...))
-   execution_result = execution_orchestrator.run(ExecutionOrchestratorInputSchema(...))
-   ```
-
-3. **Use structured schemas**:
-   ```python
-   # Old - manual parsing
-   for line in steps_text.split('\n'):
-       if line and line[0].isdigit():
-           step_desc = line.split('.', 1)[-1].strip()
-   
-   # New - guaranteed structure
-   planning_result = planning_agent.run(input_schema)
-   assert isinstance(planning_result, AtomicPlanningOutputSchema)
-   ```
+1. **Adapt Input**: Instead of `alert` and `system_context`, use `investment_query` and `research_context` as defined in `PlanningAgentInputSchema`.
+2. **Update Prompts**: The `AtomicPlanningAgent` now uses prompts tailored for investment research (see `atomic_planning_agent.py`).
+3. **Use New Schemas**: Ensure all interactions use the updated Pydantic schemas from `planner_schemas.py`, `atomic_planning_agent.py`, and `execution_orchestrator.py`.
+4. **Review Tooling**: The underlying `OrchestratorCore` should be configured with tools relevant to financial research (e.g., RAG for financial documents, web search for market news, data analysis tools).
 
 ## Configuration
 
@@ -279,16 +246,16 @@ openai = ">=1.35.12,<2.0.0"
 
 ### 1. **Use Type Hints**
 ```python
-def process_alert(input_data: AtomicPlanningInputSchema) -> AtomicPlanningOutputSchema:
+def process_investment_query(input_data: PlanningAgentInputSchema) -> AtomicPlanningOutputSchema: # Using the correct input schema
     return planning_agent.run(input_data)
 ```
 
 ### 2. **Validate Schemas**
 ```python
 # Always validate inputs
-input_schema = AtomicPlanningInputSchema(alert=alert, context=context)
-result = planning_agent.run(input_schema)
-assert isinstance(result, AtomicPlanningOutputSchema)
+# input_schema = PlanningAgentInputSchema(investment_query="...", research_context="...")
+# result = planning_agent.run(input_schema)
+# assert isinstance(result, AtomicPlanningOutputSchema) # Output of the agent itself
 ```
 
 ### 3. **Handle Errors Gracefully**
@@ -353,8 +320,8 @@ When adding new atomic components:
 
 ## Future Enhancements
 
-- [ ] Add streaming support for real-time plan generation
-- [ ] Implement plan validation and optimization
-- [ ] Add support for conditional execution flows
-- [ ] Create specialized planning agents for different incident types
-- [ ] Add metrics and observability for planning performance
+- [ ] Add streaming support for real-time investment research updates.
+- [ ] Implement plan validation against available financial tools and data sources.
+- [ ] Add support for conditional execution flows based on interim research findings.
+- [ ] Create specialized planning agents for different investment strategies (e.g., value, growth, quant).
+- [ ] Add metrics and observability for tracking research plan effectiveness and tool usage.
