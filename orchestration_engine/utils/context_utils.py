@@ -134,31 +134,31 @@ class ContextAccumulator:
         return findings
     
     @staticmethod
-    def create_focused_context(original_alert: str, original_context: str, 
+    def create_focused_context(original_query: str, original_context: str,
                              accumulated_knowledge: str, current_step_description: str) -> tuple[str, str]:
-        """Create focused alert and context for a specific step.
-        
+        """Create focused query and context for a specific research step.
+
         Args:
-            original_alert: The original system alert
-            original_context: The original system context
+            original_query: The original investment query
+            original_context: The original research context
             accumulated_knowledge: Knowledge accumulated from previous steps
             current_step_description: Description of the current step
-            
+
         Returns:
-            Tuple of (focused_alert, focused_context) for the current step
+            Tuple of (focused_query, focused_context) for the current step
         """
-        # Create a focused alert that includes the step context
-        focused_alert = f"{original_alert} (Current focus: {current_step_description})"
-        
+        # Create a focused query that includes the step context
+        focused_query = f"{original_query} (Current focus: {current_step_description})"
+
         # Create focused context that combines original context with key findings
         key_findings = ContextAccumulator.extract_key_findings(accumulated_knowledge, max_findings=3)
-        
+
         focused_context = original_context
         if key_findings:
             findings_text = " | ".join(key_findings)
-            focused_context += f"\n\nPrevious investigation findings: {findings_text}"
-        
-        return focused_alert, focused_context
+            focused_context += f"\n\nPrevious research findings: {findings_text}"
+
+        return focused_query, focused_context
 
 
 class CurrentDateProvider(SystemPromptContextProviderBase):

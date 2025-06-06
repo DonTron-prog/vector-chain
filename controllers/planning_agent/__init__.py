@@ -1,43 +1,27 @@
-"""Planning Agent - Investment research planning and execution using Atomic Agents framework."""
+"""Investment Research Planning Agent - Simplified architecture using Atomic Agents framework."""
 
-# Atomic Agents components
-from .atomic_planning_agent import (
-    AtomicPlanningOutputSchema,
-    create_atomic_planning_agent
-)
-from .execution_orchestrator import (
-    ExecutionOrchestrator,
-    ExecutionOrchestratorInputSchema,
-    ExecutionOrchestratorOutputSchema,
-    StepExecutionResult
-)
-from .atomic_executor import (
-    process_query_with_atomic_planning,
-    run_atomic_planning_scenarios
+# Simplified components
+from .investment_agent import (
+    research_investment,
+    create_planning_agent,
+    execute_research_plan
 )
 
-# Schemas
-from .planner_schemas import (
-    PlanStepSchema,
-    SimplePlanSchema,
-    PlanningAgentInputSchema,
-    PlanningAgentOutputSchema
+# Simplified schemas
+from .schemas import (
+    InvestmentQuery,
+    PlanStep,
+    ResearchPlan
 )
 
 __all__ = [
-    # Atomic Agents components
-    'AtomicPlanningOutputSchema',
-    'create_atomic_planning_agent',
-    'ExecutionOrchestrator',
-    'ExecutionOrchestratorInputSchema',
-    'ExecutionOrchestratorOutputSchema',
-    'StepExecutionResult',
-    'process_query_with_atomic_planning',
-    'run_atomic_planning_scenarios',
+    # Main functions
+    'research_investment',
+    'create_planning_agent', 
+    'execute_research_plan',
     
     # Schemas
-    'PlanStepSchema',
-    'SimplePlanSchema',
-    'PlanningAgentInputSchema',
-    'PlanningAgentOutputSchema'
+    'InvestmentQuery',
+    'PlanStep',
+    'ResearchPlan'
 ]

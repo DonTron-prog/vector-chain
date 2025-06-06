@@ -8,10 +8,10 @@ from dataclasses import dataclass
 
 @dataclass
 class ExecutionContext:
-    """Context object for passing state between planning steps."""
+    """Context object for passing state between investment research steps."""
     
-    alert: str
-    context: str
+    investment_query: str
+    research_context: str
     accumulated_knowledge: str = ""
     step_id: Optional[str] = None
     step_description: Optional[str] = None
@@ -25,7 +25,7 @@ class PlanningCapableOrchestrator(ABC):
         """Execute orchestration with planning context.
         
         Args:
-            execution_context: Context containing alert, system context, and accumulated knowledge
+            execution_context: Context containing investment query, research context, and accumulated knowledge
             
         Returns:
             Dict containing orchestrator_output and tool_response

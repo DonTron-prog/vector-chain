@@ -80,17 +80,17 @@ class OrchestratorCore(PlanningCapableOrchestrator):
     
     def execute_with_context(self, execution_context: ExecutionContext) -> Dict[str, Any]:
         """Execute orchestration with planning context.
-        
+
         Args:
             execution_context: Context containing query, research context, and accumulated knowledge
-            
+
         Returns:
             Dict containing orchestrator_output and tool_response
         """
         # Create input schema from execution context
         input_schema = OrchestratorInputSchema(
-            investment_query=execution_context.alert,
-            research_context=execution_context.context
+            investment_query=execution_context.investment_query,
+            research_context=execution_context.research_context
         )
         
         # Execute the orchestration step without resetting memory (planning agent manages this)
