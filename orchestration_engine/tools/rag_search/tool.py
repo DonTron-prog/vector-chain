@@ -65,12 +65,16 @@ class RAGSearchTool(BaseTool):
         
         self._load_and_index_documents()
 
-        client = instructor.from_openai(openai.OpenAI(api_key=self.api_key))
+        client = openai.OpenAI(
+            base_url="https://openrouter.ai/api/v1",
+            api_key=self.api_key
+        )
+        instructor_client = instructor.from_openai(client, mode=instructor.Mode.JSON)
 
-        self.query_agent = create_query_agent(client, config.llm_model_name)
+        self.query_agent = create_query_agent(instructor_client, config.llm_model_name)
         
         self.rag_context_provider = RAGContextProvider("Retrieved Document Chunks")
-        self.qa_agent = create_qa_agent(client, config.llm_model_name, self.rag_context_provider)
+        self.qa_agent = create_qa_agent(instructor_client, config.llm_model_name, self.rag_context_provider)
         
 
     def _load_and_index_documents(self):

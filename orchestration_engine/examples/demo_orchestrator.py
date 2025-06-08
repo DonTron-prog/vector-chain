@@ -15,8 +15,12 @@ def setup_environment_and_client(config):
     """Set up environment variables and initialize the OpenAI client."""
     import openai
     import instructor
-    client = instructor.from_openai(openai.OpenAI(api_key=config["openai_api_key"]))
-    return client
+    client = openai.OpenAI(
+        base_url="https://openrouter.ai/api/v1",
+        api_key=config.get("openrouter_api_key")
+    )
+    instructor_client = instructor.from_openai(client, mode=instructor.Mode.JSON)
+    return instructor_client
 
 
 def process_single_query(agent, tools, query_data, console, generate_final_answer_flag=False, reset_memory=True):

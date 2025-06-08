@@ -25,7 +25,7 @@ class PlanningOutputSchema(BaseIOSchema):
     reasoning: str = Field(..., description="Explanation of the planning approach and rationale")
 
 
-def create_planning_agent(client: instructor.Instructor, model: str = "gpt-4") -> BaseAgent:
+def create_planning_agent(client: instructor.Instructor, model: str = "deepseek/deepseek-r1-0528") -> BaseAgent:
     """Create an investment research planning agent."""
     
     return BaseAgent(
@@ -131,7 +131,7 @@ def execute_research_plan(plan: ResearchPlan, orchestrator_core: OrchestratorCor
     return plan
 
 
-def research_investment(query: str, context: str = "", model: str = "mistral/ministral-8b") -> ResearchPlan:
+def research_investment(query: str, context: str = "", model: str = "google/gemini-flash-1.5") -> ResearchPlan:
     """
     Complete investment research workflow.
     

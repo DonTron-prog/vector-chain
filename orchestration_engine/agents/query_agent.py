@@ -17,7 +17,13 @@ class QueryAgentInputSchema(BaseIOSchema):
 
 query_agent = BaseAgent(
     BaseAgentConfig(
-        client=instructor.from_openai(openai.OpenAI(api_key=ChatConfig.api_key)),
+        client=instructor.from_openai(
+            openai.OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=ChatConfig.api_key
+            ),
+            mode=instructor.Mode.JSON
+        ),
         model=ChatConfig.model,
         system_prompt_generator=SystemPromptGenerator(
             background=[
