@@ -1,16 +1,17 @@
 [tool.poetry]
-name = "orchestration_engine"
-version = "0.1.0"
-description = ""
-authors = ["KennyVaneetvelde <kenny@inosta.be>"]
+name = "pydantic-ai-investment-research"
+version = "1.0.0"
+description = "Investment research system using pydantic-ai with natural agent loops"
+authors = ["Migration Team"]
 readme = "README.md"
-packages = [{include = "orchestration_engine"}]
+packages = [{include = "agents"}, {include = "tools"}, {include = "models"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-atomic-agents = "^1.1.2"
 instructor = "^1.6.1"
-pydantic = ">=2.10.3,<3.0.0"
+pydantic = ">=2.10.3,<3.0.0" 
+pydantic-ai = "^0.0.14"
+aiohttp = "^3.9.0"
 sympy = "^1.13.3"
 python-dotenv = ">=1.0.1,<2.0.0"
 openai = ">=1.35.12,<2.0.0"
