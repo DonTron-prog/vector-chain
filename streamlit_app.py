@@ -182,9 +182,10 @@ def extract_text_from_file(file_path: str, file_type: str) -> str:
             with open(file_path, 'r', encoding='utf-8') as f:
                 return f.read()
         elif file_type == 'application/pdf' or file_path.endswith('.pdf'):
-            # For PDF files, you'd need to install PyPDF2 or similar
-            st.warning("PDF support requires additional dependencies. Please convert to TXT format.")
-            return ""
+            # Use hybrid PDF extractor
+            from tools.pdf_extractor import extract_pdf_text_sync
+            with st.spinner("Extracting text from PDF (trying pymupdf first, VLM fallback if needed)..."):
+                return extract_pdf_text_sync(file_path, use_vlm_fallback=True)
         else:
             st.error(f"Unsupported file type: {file_type}")
             return ""

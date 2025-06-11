@@ -172,8 +172,11 @@ async def main():
 
 if __name__ == "__main__":
     # Ensure required environment variables
-    if not os.getenv("OPENAI_API_KEY"):
-        print("❌ OPENAI_API_KEY environment variable is required")
+    try:
+        from config import get_required_env_var
+        get_required_env_var("OPENROUTER_API_KEY")
+    except RuntimeError as e:
+        print(f"❌ {e}")
         exit(1)
     
     asyncio.run(main())

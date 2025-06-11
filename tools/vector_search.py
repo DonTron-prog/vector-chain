@@ -97,10 +97,10 @@ def extract_financial_data(content: str) -> Dict[str, Any]:
         content: Document content to analyze
         
     Returns:
-        Dictionary of extracted financial metrics
+        Dictionary of extracted financial metrics with parsed values
     """
-    # This is a simplified version - in practice you'd use more sophisticated parsing
     import re
+    from .calculator import parse_financial_value
     
     financial_data = {}
     
@@ -115,6 +115,12 @@ def extract_financial_data(content: str) -> Dict[str, Any]:
     for metric, pattern in patterns.items():
         match = re.search(pattern, content, re.IGNORECASE)
         if match:
-            financial_data[metric] = match.group(1)
+            raw_value = match.group(1)
+            # Use shared parsing function for consistency
+            parsed_value = parse_financial_value(raw_value)
+            financial_data[metric] = {
+                "raw": raw_value,
+                "parsed": parsed_value
+            }
     
     return financial_data

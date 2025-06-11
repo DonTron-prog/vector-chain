@@ -1,21 +1,12 @@
 """Investment research agent with natural tool loops using pydantic-ai."""
 
-import os
-from dotenv import load_dotenv
 from pydantic_ai import Agent, RunContext
-from pydantic_ai.models.openai import OpenAIModel
 from agents.dependencies import ResearchDependencies
 from models.schemas import InvestmentFindings
-
-# Load environment variables
-load_dotenv()
+from config import get_openai_model
 
 # Configure OpenRouter
-openai_model = OpenAIModel(
-    'gpt-4o-mini',
-    base_url='https://openrouter.ai/api/v1',
-    api_key=os.getenv('OPENROUTER_API_KEY')
-)
+openai_model = get_openai_model()
 from tools.vector_search import search_internal_docs as _search_internal_docs, format_document_results
 from tools.web_search import search_web as _search_web, format_search_results  
 from tools.web_scraper import scrape_webpage as _scrape_webpage

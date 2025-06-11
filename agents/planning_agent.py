@@ -1,20 +1,11 @@
 """Investment research planning agent using pydantic-ai."""
 
-import os
-from dotenv import load_dotenv
 from pydantic_ai import Agent
-from pydantic_ai.models.openai import OpenAIModel
 from models.schemas import ResearchPlan
-
-# Load environment variables
-load_dotenv()
+from config import get_openai_model
 
 # Configure OpenRouter
-openai_model = OpenAIModel(
-    'gpt-4o-mini',
-    base_url='https://openrouter.ai/api/v1',
-    api_key=os.getenv('OPENROUTER_API_KEY')
-)
+openai_model = get_openai_model()
 
 planning_agent = Agent(
     openai_model,

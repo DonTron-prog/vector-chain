@@ -43,6 +43,12 @@ make test                    # Run all tests
 make test-unit              # Unit tests only
 make test-cov               # Tests with coverage
 make test-fast              # Fast tests only
+
+# New test structure - Manual testing
+python tests/rag/simple_rag_test.py          # Interactive RAG testing
+python tests/rag/test_rag_only.py            # Comprehensive RAG tests
+python tests/rag/test_rag_agent_only.py      # RAG-only agent tests
+python tests/agents/test_research_agent_full.py  # Full agent tests
 ```
 
 ### Running Examples
