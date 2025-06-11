@@ -54,6 +54,28 @@ python main.py
 python test_pydantic_ai.py
 ```
 
+### Streamlit Web App
+```bash
+# Launch the Streamlit web interface
+python run_streamlit.py
+
+# Or directly with streamlit
+streamlit run streamlit_app.py
+```
+
+**Streamlit App Features:**
+- 📁 **Document Upload**: Upload investment documents (TXT/PDF) with company symbol and document type
+- 🔍 **Investment Research**: Enter queries with context and run comprehensive analysis  
+- 📊 **Results Display**: View formatted analysis with financial metrics, insights, and recommendations
+- 📋 **Document Viewer**: Search and view existing documents in the vector database
+- 📥 **Export Options**: Download results as JSON or text summary
+
+**App Usage:**
+1. **Setup Documents**: Upload company documents (10K, 10Q, earnings reports, analyst reports)
+2. **Run Research**: Enter investment questions like "Should I invest in AAPL for long-term growth?"
+3. **View Results**: Get comprehensive analysis with metrics, insights, risks, and recommendations
+4. **Search Documents**: Find specific information in your uploaded document collection
+
 ## Architecture Overview
 
 ### Clean Pydantic-AI Structure
