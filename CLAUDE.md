@@ -6,11 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with th
 
 ### Setup
 ```bash
-# Install dependencies
-poetry install
-
-# Activate virtual environment  
-poetry shell
+# Install dependencies (use conda environment: agentsre)
+conda activate agentsre
+pip install -e .
+pip install -r requirements-dev.txt
 
 # Required environment variables (available in .env file)
 export OPENROUTER_API_KEY="your-openrouter-api-key"
@@ -19,11 +18,31 @@ export OPENAI_API_KEY="your-openai-api-key"  # fallback
 
 ### Testing
 ```bash
-# Test core components
-python test_pydantic_ai.py
+# Install testing dependencies (first time setup)
+pip install -r requirements-dev.txt
 
-# Run full investment research workflow
-python main.py
+# Run all tests
+pytest
+
+# Run specific test categories
+pytest tests/unit/                    # Unit tests only
+pytest tests/integration/             # Integration tests only
+pytest tests/e2e/                     # End-to-end tests only
+
+# Run tests with coverage
+pytest --cov=tools --cov=models --cov=agents --cov-report=html
+
+# Run fast tests only (exclude slow/network tests)
+pytest -m "not slow and not network"
+
+# Use the convenient test runner
+python run_tests.py
+
+# Or use Makefile commands
+make test                    # Run all tests
+make test-unit              # Unit tests only
+make test-cov               # Tests with coverage
+make test-fast              # Fast tests only
 ```
 
 ### Running Examples
