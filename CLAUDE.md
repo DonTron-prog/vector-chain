@@ -60,27 +60,40 @@ python main.py
 python test_pydantic_ai.py
 ```
 
-### Streamlit Web App
+### Streamlit Chat Web App
 ```bash
-# Launch the Streamlit web interface
+# Launch the Streamlit chat interface
 python run_streamlit.py
 
 # Or directly with streamlit
 streamlit run streamlit_app.py
 ```
 
-**Streamlit App Features:**
-- 📁 **Document Upload**: Upload investment documents (TXT/PDF) with company symbol and document type
-- 🔍 **Investment Research**: Enter queries with context and run comprehensive analysis  
-- 📊 **Results Display**: View formatted analysis with financial metrics, insights, and recommendations
-- 📋 **Document Viewer**: Search and view existing documents in the vector database
-- 📥 **Export Options**: Download results as JSON or text summary
+**Chat Interface Features:**
+- 💬 **Multi-Mode Chat**: Choose from 4 research modes with increasing depth
+- 📁 **Document Management**: Upload and manage investment documents (TXT/PDF)
+- 🎛️ **Mode Selection**: Switch between research modes in real-time
+- 📊 **Context Persistence**: Maintain conversation history across mode switches
+- 📥 **Export Options**: Download chat history and analysis results
+
+**Research Modes:**
+1. **💬 Simple Chat**: Quick Q&A with LLM for general investment questions
+2. **📚 RAG Only**: Search internal documents + LLM analysis for company-specific queries
+3. **🔍 Deep Research**: Web search + scraping + calculations for current market analysis
+4. **🎯 Full Planning**: Complete research workflow with planning agent (original functionality)
 
 **App Usage:**
-1. **Setup Documents**: Upload company documents (10K, 10Q, earnings reports, analyst reports)
-2. **Run Research**: Enter investment questions like "Should I invest in AAPL for long-term growth?"
-3. **View Results**: Get comprehensive analysis with metrics, insights, risks, and recommendations
-4. **Search Documents**: Find specific information in your uploaded document collection
+1. **Select Mode**: Choose research depth in sidebar (Simple → RAG → Deep → Full Planning)
+2. **Upload Documents**: Add company documents to knowledge base for RAG and Full Planning modes
+3. **Chat Interface**: Ask investment questions and get mode-appropriate responses
+4. **Context Settings**: Set investment context (timeframe, risk tolerance) in sidebar
+5. **Export Results**: Download chat history or full analysis results
+
+**Mode Descriptions:**
+- **Simple Chat**: Fast conversational AI for general investment education and quick questions
+- **RAG Only**: Searches your uploaded documents to answer specific company questions
+- **Deep Research**: Uses live web search for current market trends and news analysis  
+- **Full Planning**: Comprehensive research with structured planning, all tools, and detailed analysis
 
 ## Architecture Overview
 
