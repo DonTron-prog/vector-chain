@@ -1,368 +1,249 @@
-# Investment Research Planning Agent with Atomic Agents
+# Pydantic-AI Investment Research System
 
-This module provides a modern investment research planning and execution system built with the Atomic Agents framework.
+A modern investment research system built with **pydantic-ai** featuring natural agent loops, type-safe dependencies, and comprehensive analysis capabilities.
 
-## Architecture Overview
+## 🚀 Quick Start
 
-The investment research planning agent uses **Atomic Agents** architecture with clear separation of concerns:
+### Installation
+```bash
+# Install dependencies
+poetry install
 
-- **Planning**: [`atomic_planning_agent.py`](controllers/planning_agent/atomic_planning_agent.py) - Pure investment research planning with structured outputs
-- **Execution**: [`execution_orchestrator.py`](controllers/planning_agent/execution_orchestrator.py) - Pure execution logic for research plans
-- **Schemas**: [`planner_schemas.py`](controllers/planning_agent/planner_schemas.py) - Structured I/O contracts for investment queries
-- **Orchestration**: [`atomic_executor.py`](controllers/planning_agent/atomic_executor.py) - Complete investment research workflow coordination
-
-## Quick Start
+# Set up environment variables (available in .env file)
+export OPENROUTER_API_KEY="your-openrouter-api-key"
+```
 
 ### Basic Usage
-
 ```python
-from controllers.planning_agent import (
-    create_atomic_planning_agent,
-    ExecutionOrchestrator,
-    PlanningAgentInputSchema,
-    ExecutionOrchestratorInputSchema
-)
-import instructor
-import openai
-import os
+from main import research_investment
 
-# 0. Create a shared client (ensure api_key is available)
-api_key = os.getenv("OPENAI_API_KEY") # Example
-shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key))
-
-# 1. Create atomic investment planning agent
-planning_agent = create_atomic_planning_agent(shared_client, model="gpt-4")
-
-# 2. Generate structured investment research plan
-planning_result = planning_agent.run(PlanningAgentInputSchema(
-    investment_query="Analyze AAPL's growth prospects for the next 5 years",
-    research_context="Client is risk-averse, focus on fundamentals and market position"
-))
-
-# 3. Execute plan (requires orchestrator setup)
-execution_orchestrator = ExecutionOrchestrator(orchestrator_core)
-execution_result = execution_orchestrator.run(
-    ExecutionOrchestratorInputSchema(
-        investment_query=planning_result.investment_query,
-        research_context=planning_result.research_context,
-        planning_output=planning_result
-    )
-)
-```
-
-### Complete Workflow
-
-```python
-from controllers.planning_agent import process_query_with_atomic_planning
-
-# One-line execution of complete investment research workflow
-result = process_query_with_atomic_planning(
-    investment_query="Should I invest in MSFT for short-term gains?",
-    research_context="Client has 3-6 month holding period, high risk tolerance",
-    model="gpt-4"
+# Conduct comprehensive investment research
+analysis = await research_investment(
+    query="Should I invest in AAPL for long-term growth?",
+    context="Looking for 3-5 year investment horizon. Moderate risk tolerance."
 )
 
-print(f"Success: {result.success}")
-print(f"Steps executed: {len(result.plan.steps)}")
-print(f"Summary: {result.summary}")
+print(analysis.findings.summary)
+print(analysis.findings.recommendation)
 ```
 
-## File Structure
-
-```
-controllers/planning_agent/
-├── README.md                          # This file
-├── __init__.py                        # Module exports
-├── planner_schemas.py                 # Pydantic schemas
-│
-├── # Atomic Agents Implementation  
-├── atomic_planning_agent.py           # Pure planning agent
-├── execution_orchestrator.py          # Pure execution logic
-├── atomic_executor.py                 # Atomic workflow orchestration
-│
-└── # Testing & Demo
-    ├── test_atomic_components.py      # Component tests
-    └── demo_atomic_agents.py          # Architecture demo
-```
-
-## Key Components
-
-### 1. AtomicPlanningAgent
-
-**Purpose**: Generate structured investment research plans
-
-**Features**:
-- Uses Instructor for guaranteed structured outputs
-- Follows investment research best practices (data gathering → analysis → valuation → recommendation)
-- Generates 2-4 actionable research steps with reasoning
-- Fully testable and debuggable
-
-**Input Schema**:
-```python
-class PlanningAgentInputSchema(BaseIOSchema):
-    investment_query: str = Field(..., description="The investment query to create a plan for")
-    research_context: str = Field(..., description="Contextual information for the research")
-```
-
-**Output Schema**:
-```python
-class AtomicPlanningOutputSchema(BaseIOSchema):
-    steps: List[PlanStepSchema] = Field(..., description="Generated plan steps (2-4)")
-    reasoning: str = Field(..., description="Planning approach and rationale")
-```
-
-### 2. ExecutionOrchestrator
-
-**Purpose**: Execute investment research plans step-by-step using the orchestration engine
-
-**Features**:
-- Pure execution logic (no planning)
-- Context accumulation across research steps
-- Detailed step-by-step results
-- Error handling and recovery
-
-**Input Schema**:
-```python
-class ExecutionOrchestratorInputSchema(BaseIOSchema):
-    investment_query: str = Field(..., description="The original investment query")
-    research_context: str = Field(..., description="Contextual information for the research")
-    planning_output: AtomicPlanningOutputSchema = Field(..., description="Output from the planning agent")
-```
-
-**Output Schema**:
-```python
-class ExecutionOrchestratorOutputSchema(BaseIOSchema):
-    executed_steps: List[StepExecutionResult] = Field(...)
-    final_summary: str = Field(...)
-    success: bool = Field(...)
-    accumulated_knowledge: str = Field(...)
-```
-
-### 3. Schema-Based Chaining
-
-Components are connected through matching schemas:
-
-```python
-# Planning output → Execution input
-planning_result = planning_agent.run(planning_input)
-execution_result = execution_orchestrator.run(
-    ExecutionOrchestratorInputSchema(
-        investment_query=planning_input.investment_query,
-        research_context=planning_input.research_context,
-        planning_output=planning_result
-    )
-)
-```
-
-## Running Examples
-
-### 1. Test Components
-
+### Run Examples
 ```bash
-# Test individual atomic components
-python controllers/planning_agent/test_atomic_components.py
+# Test core components
+python test_pydantic_ai.py
+
+# Run full investment workflow
+python main.py
 ```
 
-### 2. Explore Architecture
+## 🏗️ Architecture
 
-```bash
-# Interactive demo of atomic agents features
-python controllers/planning_agent/demo_atomic_agents.py
+### Clean, Natural Design
+```
+agents/                    # Pydantic-AI agents with natural tool loops
+├── dependencies.py       # Type-safe shared context
+├── planning_agent.py     # Investment research planning
+└── research_agent.py     # Research execution with tools
+
+tools/                    # Tool functions for agents
+├── web_search.py        # SearxNG integration
+├── web_scraper.py       # BeautifulSoup content extraction
+├── vector_search.py     # ChromaDB document search
+└── calculator.py        # Financial calculations
+
+models/                   # Clean Pydantic schemas
+└── schemas.py           # All data models
+
+main.py                  # Main entry point
 ```
 
-### 3. Run Complete Workflow
+### Core Principles
+1. **Natural Agent Loops**: Agents decide when and how to use tools organically
+2. **Type-Safe Dependencies**: Shared context through RunContext with dependency injection
+3. **Simple Architecture**: Clear separation without complex orchestration
 
-```bash
-# Run atomic agents workflow
-python controllers/planning_agent/atomic_executor.py
+## 🎯 Key Features
+
+### Natural Tool Integration
+The research agent naturally decides which tools to use:
+```python
+@research_agent.tool
+async def search_internal_docs(ctx: RunContext[ResearchDependencies], query: str) -> str:
+    """Search SEC filings, earnings reports, analyst documents."""
+    # Agent calls this when it needs internal company data
+
+@research_agent.tool  
+async def search_web(ctx: RunContext[ResearchDependencies], query: str) -> str:
+    """Search current market news and trends."""
+    # Agent calls this for real-time market information
 ```
 
-## Benefits of Atomic Agents Architecture
+### Rich Analysis Output
+- **Financial Metrics**: P/E ratios, debt ratios, growth rates
+- **Key Insights**: Bullet-pointed findings from research
+- **Risk Assessment**: Identified risk factors and opportunities  
+- **Investment Recommendation**: Clear buy/hold/sell guidance
+- **Confidence Score**: AI confidence in analysis quality
 
-### 🔍 **Transparency**
-- Clear input/output contracts for every component
-- No hidden "magic" or black boxes
-- Easy to understand data flow
+### Enhanced Web Capabilities
+- **SearxNG Integration**: Comprehensive web search across multiple engines
+- **BeautifulSoup Scraping**: Intelligent content extraction from financial sites
+- **Vector Search**: Semantic search through SEC filings and company documents
 
-### 🧪 **Testability**
-- Unit test each atomic component independently
-- Mock inputs/outputs with Pydantic schemas
-- Isolated testing of planning vs execution logic
+## 📊 Example Output
 
-### 🐛 **Debuggability**
-- Set breakpoints on specific atomic components
-- Inspect exact schemas at each step
-- Clear separation of concerns
+```
+🔍 Starting investment research for: Should I invest in AAPL for long-term growth?
 
-### 🔧 **Modularity**
-- Swap planning strategies without changing execution
-- Replace execution engines without touching planning
-- Mix and match components as needed
+✅ Plan created with 4 steps:
+  1. Gather comprehensive financial statements...
+  2. Conduct competitive analysis...
+  3. Perform valuation analysis...
+  4. Develop investment recommendation...
 
-### 📊 **Reliability**
-- Guaranteed structured outputs with Instructor
-- Pydantic validation catches schema errors
-- Consistent data formats across components
+📊 Investment Analysis Summary
+Apple Inc. (AAPL) has shown resilience in the technology sector despite recent 
+challenges. Q4 revenues of $89.5 billion with strong services growth...
 
-### 🔗 **Composability**
-- Chain components through schema matching
-- Build complex workflows from simple atoms
-- Reuse components in different contexts
+💰 Financial Metrics
+P/E Ratio: 32.30
+Profit Margin: 1260.00%
 
-## Architecture Diagram
+🔑 Key Insights:
+• EPS increased to $1.46, surpassing analyst expectations
+• Services sector outperformed with 16% year-over-year growth
+• iPhone sales remained stable despite market challenges
 
-```mermaid
-graph TD
-    A[Investment Query] --> B[AtomicPlanningAgent]
-    B --> C[AtomicPlanningOutputSchema]
-    C --> D[ExecutionOrchestrator]
-    D --> E[OrchestratorCore]
-    E --> F[Investment Tool Execution]
-    F --> G[ExecutionOrchestratorOutputSchema]
-    G --> H[Investment Research Summary]
-    
-    style B fill:#e8f5e8
-    style D fill:#e8f5e8
-    style C fill:#e3f2fd
-    style G fill:#e3f2fd
+🎯 Investment Recommendation
+Given solid services performance and iPhone resilience, investing in AAPL 
+could be favorable for long-term growth...
+
+📈 Confidence Score: 75.0%
 ```
 
-## Configuration
-
-### Environment Variables
-
-```bash
-# Required for planning agent
-export OPENAI_API_KEY="your-openai-api-key"
-
-# Optional model selection
-export PLANNING_MODEL="gpt-4"  # Default: gpt-4
-```
+## 🛠️ Technical Details
 
 ### Dependencies
+- **pydantic-ai**: Natural agent framework with tool loops
+- **aiohttp**: Async HTTP for web operations
+- **beautifulsoup4**: HTML parsing and content extraction
+- **chromadb**: Vector database for document search
+- **rich**: Terminal formatting for output
 
-The atomic agents implementation requires:
+### Configuration
+- Uses OpenRouter as API proxy: `https://openrouter.ai/api/v1`
+- Model: `gpt-4o-mini` (configurable)
+- ChromaDB persistence: `./investment_chroma_db`
+- SearxNG endpoint: `http://localhost:8080`
 
-```toml
-atomic-agents = "^1.1.2"
-instructor = "^1.6.1"
-pydantic = ">=2.10.3,<3.0.0"
-openai = ">=1.35.12,<2.0.0"
+### Data Sources
+- **Knowledge Base**: SEC filings, earnings transcripts, analyst reports
+  - `knowledge_base/AAPL/`: Apple financial documents
+  - `knowledge_base/MSFT/`: Microsoft financial documents
+- **Real-time Data**: Web search for current market information
+- **Vector Embeddings**: Semantic search through company documents
+
+## 🔄 Investment Research Flow
+
+1. **Planning Phase**
+   ```python
+   plan = await create_research_plan(query, context)
+   # → Generates 2-4 structured research steps
+   ```
+
+2. **Research Phase** 
+   ```python
+   findings = await conduct_research(query, plan, deps)
+   # → Agent naturally uses tools:
+   #   - search_internal_docs for SEC filings
+   #   - search_web for current news
+   #   - scrape_webpage for detailed content
+   #   - calculate_financial_metrics for analysis
+   ```
+
+3. **Analysis Output**
+   ```python
+   analysis = InvestmentAnalysis(query, context, plan, findings)
+   # → Complete structured analysis with confidence score
+   ```
+
+## 🧪 Testing
+
+### Component Tests
+```bash
+# Test planning agent
+python test_pydantic_ai.py
+
+# Test dependencies initialization
+python -c "from agents.dependencies import initialize_dependencies; print('✅ Dependencies OK')"
 ```
 
-## Best Practices
-
-### 1. **Use Type Hints**
-```python
-def process_investment_query(input_data: PlanningAgentInputSchema) -> AtomicPlanningOutputSchema:
-    return planning_agent.run(input_data)
+### Full Workflow Test
+```bash
+# Run complete investment research
+python main.py
 ```
 
-### 2. **Validate Schemas**
+## 🎨 Migration Benefits
+
+Compared to the previous atomic-agents implementation:
+
+| Aspect | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| **Success Rate** | 50% | 100% | ✅ +50% |
+| **Architecture** | Complex orchestration | Natural loops | ✅ Simplified |
+| **File Count** | 15+ files | 8 files | ✅ Cleaner |
+| **Tool Usage** | Forced by orchestrator | Agent decides | ✅ More natural |
+| **Output** | Plain text | Rich formatted | ✅ Better UX |
+| **Type Safety** | Basic schemas | Full RunContext | ✅ Stronger |
+
+## 🚀 Advanced Usage
+
+### Custom Research Context
 ```python
-# Always validate inputs
-input_schema = PlanningAgentInputSchema(
-    investment_query="Analyze NVDA vs AMD in AI chip market",
-    research_context="Client interested in semiconductor exposure"
-)
-result = planning_agent.run(input_schema)
-assert isinstance(result, AtomicPlanningOutputSchema)
-```
-
-### 3. **Handle Errors Gracefully**
-```python
-try:
-    result = planning_agent.run(input_schema)
-except Exception as e:
-    logger.error(f"Planning failed: {e}")
-    # Implement fallback logic
-```
-
-### 4. **Test Components Independently**
-```python
-def test_planning_agent():
-    # shared_client = instructor.from_openai(openai.OpenAI(base_url="https://openrouter.ai/api/v1", api_key=api_key)) # Example
-    agent = create_atomic_planning_agent(shared_client, model)
-    result = agent.run(test_input)
-    assert len(result.steps) >= 3
-    assert result.reasoning is not None
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Schema Validation Errors**
-   - Check that all required fields are provided
-   - Ensure field types match schema definitions
-   - Validate nested objects (e.g., PlanStepSchema)
-
-2. **API Key Issues**
-   - Verify OPENAI_API_KEY is set correctly
-   - Check API key permissions and quotas
-   - Test with a simple OpenAI call first
-
-3. **Import Errors**
-   - Ensure atomic-agents is installed: `pip install atomic-agents`
-   - Check Python path includes the project root
-   - Verify all dependencies are installed
-
-### Debug Mode
-
-Enable debug logging:
-
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-
-# Run with verbose output
-result = planning_agent.run(input_schema)
-```
-
-## Contributing
-
-When adding new atomic components:
-
-1. **Follow the IPO Pattern**: Input Schema → Process → Output Schema
-2. **Inherit from BaseIOSchema**: Use Pydantic for all schemas
-3. **Add Tests**: Create unit tests for each component
-4. **Document Schemas**: Add clear field descriptions
-5. **Update __init__.py**: Export new components
-
-## Example Scenarios
-
-The system handles various investment research scenarios:
-
-### 1. Individual Stock Analysis
-```python
-result = process_query_with_atomic_planning(
-    investment_query="Assess AAPL's long-term growth potential for 5+ year hold",
-    research_context="AAPL has seen significant price appreciation. Need fundamental analysis and valuation."
+analysis = await research_investment(
+    query="Analyze semiconductor ETFs vs individual stocks",
+    context="Portfolio diversification strategy. Risk tolerance: moderate. Timeline: 2-3 years.",
+    searxng_url="http://custom-searxng:8080",  # Custom search endpoint
+    chroma_path="./custom_vector_db"           # Custom vector database
 )
 ```
 
-### 2. Comparative Analysis
+### Accessing Individual Components
 ```python
-result = process_query_with_atomic_planning(
-    investment_query="Compare growth prospects of NVDA vs AMD in AI chip market",
-    research_context="Both are key players. Analyze market share, R&D, partnerships, and financials."
-)
+from agents.planning_agent import create_research_plan
+from agents.research_agent import conduct_research
+from agents.dependencies import initialize_dependencies
+
+# Use components independently
+deps = initialize_dependencies(query, context)
+plan = await create_research_plan(query, context)
+findings = await conduct_research(query, plan, deps)
 ```
 
-### 3. Short-term Investment Assessment
-```python
-result = process_query_with_atomic_planning(
-    investment_query="Evaluate MSFT for 3-6 month holding period",
-    research_context="Client interested in short-term gains. MSFT recently announced AI initiatives."
-)
-```
+## 📚 Documentation
 
-## Future Enhancements
+- [CLAUDE.md](CLAUDE.md) - Development guidance
+- [COMPARISON_RESULTS.md](COMPARISON_RESULTS.md) - Migration comparison
+- [README_PYDANTIC_AI.md](README_PYDANTIC_AI.md) - Migration documentation
 
-- [ ] Add streaming support for real-time investment research updates
-- [ ] Implement plan validation against available financial data sources
-- [ ] Add support for conditional execution flows based on research findings
-- [ ] Create specialized planning agents for different investment strategies (value, growth, quant)
-- [ ] Add metrics and observability for research plan effectiveness
-- [ ] Support for multi-step plan dependencies and research workflows
-- [ ] Integration with external financial data providers and market feeds
+## 🤝 Contributing
+
+1. Follow pydantic-ai patterns and natural agent loops
+2. Use type-safe RunContext for tool functions
+3. Add clear docstrings for tool functions (LLM reads these)
+4. Test components individually and as complete workflows
+5. Maintain clean separation between agents, tools, and models
+
+## 📈 Future Enhancements
+
+- [ ] Portfolio analysis capabilities
+- [ ] Real-time market data integration
+- [ ] Advanced financial modeling tools
+- [ ] Multi-asset class support
+- [ ] Risk management analytics
+- [ ] ESG (Environmental, Social, Governance) analysis
+
+## 📄 License
+
+This project demonstrates modern agentic AI architecture patterns using pydantic-ai for investment research workflows.

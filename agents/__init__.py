@@ -1,0 +1,1 @@
+"""Pydantic-AI based investment research agents."""

@@ -1,16 +1,17 @@
 [tool.poetry]
-name = "orchestration_engine"
-version = "0.1.0"
-description = ""
-authors = ["KennyVaneetvelde <kenny@inosta.be>"]
+name = "pydantic-ai-investment-research"
+version = "1.0.0"
+description = "Investment research system using pydantic-ai with natural agent loops"
+authors = ["Migration Team"]
 readme = "README.md"
-packages = [{include = "orchestration_engine"}]
+packages = [{include = "agents"}, {include = "tools"}, {include = "models"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-atomic-agents = "^1.1.2"
 instructor = "^1.6.1"
-pydantic = ">=2.10.3,<3.0.0"
+pydantic = ">=2.10.3,<3.0.0" 
+pydantic-ai = "^0.0.14"
+aiohttp = "^3.9.0"
 sympy = "^1.13.3"
 python-dotenv = ">=1.0.1,<2.0.0"
 openai = ">=1.35.12,<2.0.0"
@@ -20,7 +21,42 @@ readability-lxml = "^0.8.0"
 requests = "^2.31.0"
 chromadb = "^0.4.0"
 numpy = ">=1.24.0,<2.0.0"
+streamlit = "^1.28.0"
+pandas = "^2.0.0"
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0.0"
+pytest-asyncio = "^0.23.0"
+pytest-mock = "^3.12.0"
+pytest-cov = "^4.1.0"
+httpx = "^0.27.0"
+respx = "^0.21.0"
+faker = "^22.0.0"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests", 
+    "e2e: End-to-end tests",
+    "slow: Slow tests",
+    "network: Tests requiring network access"
+]
+
+[tool.coverage.run]
+source = ["agents", "tools", "models"]
+omit = ["*/tests/*", "*/test_*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError"
+]
 
 [build-system]
 requires = ["poetry-core"]
