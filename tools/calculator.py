@@ -187,7 +187,7 @@ def perform_financial_calculations(
         "net_income": r"net income.*?\$?([\d,\.]+\s*(?:[BMK]|billion|million|thousand)?)",
         "revenue": r"revenue.*?\$?([\d,\.]+\s*(?:[BMK]|billion|million|thousand)?)",
         "total_debt": r"total debt.*?\$?([\d,\.]+\s*(?:[BMK]|billion|million|thousand)?)",
-        "total_equity": r"(?:total equity|shareholders.equity).*?\$?([\d,\.]+\s*(?:[BMK]|billion|million|thousand)?)",
+        "total_equity": r"(?:total equity|shareholders.?\s*equity|equity).*?\$?([\d,\.]+\s*(?:[BMK]|billion|million|thousand)?)",
         "book_value_per_share": r"book value per share.*?\$?([\d,\.]+)",
     }
     
