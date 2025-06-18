@@ -20,9 +20,22 @@ class TestResearchWorkflow:
         # Mock planning agent response
         mock_plan = ResearchPlan(
             steps=[
-                {"description": "Search for AAPL financial performance", "reasoning": "Need current metrics", "priority": "high"},
-                {"description": "Analyze market position", "reasoning": "Understand competitive landscape", "priority": "medium"}
+                {
+                    "description": "Search for AAPL financial performance",
+                    "reasoning": "Need current metrics",
+                    "priority": "high",
+                    "focus_area": "data gathering",
+                    "expected_outcome": "Current financial data and metrics"
+                },
+                {
+                    "description": "Analyze market position",
+                    "reasoning": "Understand competitive landscape",
+                    "priority": "medium",
+                    "focus_area": "analysis",
+                    "expected_outcome": "Market position assessment"
+                }
             ],
+            priority_areas=["financial analysis", "market research"],
             reasoning="Comprehensive analysis approach"
         )
         
@@ -30,6 +43,7 @@ class TestResearchWorkflow:
         mock_analysis = InvestmentAnalysis(
             query=query,
             context=context,
+            plan=mock_plan,
             financial_metrics={
                 "pe_ratio": 28.5,
                 "debt_to_equity": 0.25,
@@ -124,15 +138,29 @@ class TestResearchWorkflow:
                 # Mock appropriate responses based on query type
                 mock_plan = ResearchPlan(
                     steps=[
-                        {"description": f"Research {case['expected_focus']}", "reasoning": "Test", "priority": "high"},
-                        {"description": "Analyze results", "reasoning": "Test", "priority": "medium"}
+                        {
+                            "description": f"Research {case['expected_focus']}",
+                            "reasoning": "Test",
+                            "priority": "high",
+                            "focus_area": "data gathering",
+                            "expected_outcome": f"Research data on {case['expected_focus']}"
+                        },
+                        {
+                            "description": "Analyze results",
+                            "reasoning": "Test",
+                            "priority": "medium",
+                            "focus_area": "analysis",
+                            "expected_outcome": "Analysis results"
+                        }
                     ],
+                    priority_areas=[case['expected_focus'], "analysis"],
                     reasoning=f"Focus on {case['expected_focus']}"
                 )
                 
                 mock_analysis = InvestmentAnalysis(
                     query=case["query"],
                     context=case["context"],
+                    plan=mock_plan,
                     financial_metrics={"pe_ratio": 25.0},
                     findings={
                         "summary": f"Analysis focused on {case['expected_focus']}",
@@ -172,19 +200,26 @@ class TestAgentIntegration:
                 {
                     "description": "Gather AAPL financial statements",
                     "reasoning": "Need baseline financial data",
-                    "priority": "high"
+                    "priority": "high",
+                    "focus_area": "data gathering",
+                    "expected_outcome": "Complete financial statements and metrics"
                 },
                 {
                     "description": "Research market sentiment",
                     "reasoning": "Understand market perception",
-                    "priority": "medium"
+                    "priority": "medium",
+                    "focus_area": "analysis",
+                    "expected_outcome": "Market sentiment assessment"
                 },
                 {
                     "description": "Calculate valuation metrics",
                     "reasoning": "Determine if fairly valued",
-                    "priority": "high"
+                    "priority": "high",
+                    "focus_area": "valuation",
+                    "expected_outcome": "Valuation analysis and fair price target"
                 }
             ],
+            priority_areas=["financial analysis", "market research", "valuation"],
             reasoning="Systematic approach to investment analysis"
         )
         
@@ -197,6 +232,7 @@ class TestAgentIntegration:
             mock_research.return_value = InvestmentAnalysis(
                 query=query,
                 context=context,
+                plan=research_plan,
                 financial_metrics={"pe_ratio": 30.0},
                 findings={
                     "summary": "Analysis complete",
@@ -232,8 +268,8 @@ class TestAgentIntegration:
         
         with patch('tools.web_search.search_web') as mock_search, \
              patch('tools.web_scraper.scrape_webpage') as mock_scrape, \
-             patch('tools.calculator.calculate_financial_ratios') as mock_calc, \
-             patch('tools.vector_search.search_documents') as mock_vector:
+             patch('tools.calculator.calculate_financial_metrics') as mock_calc, \
+             patch('tools.vector_search.search_internal_docs') as mock_vector:
             
             # Mock tool responses
             mock_search.return_value = "Search results about AAPL"
@@ -243,9 +279,32 @@ class TestAgentIntegration:
             
             # Mock the research agent to use tools
             with patch('agents.research_agent.conduct_research') as mock_research:
+                # Create a basic research plan for this test
+                basic_plan = ResearchPlan(
+                    steps=[
+                        {
+                            "description": "Analyze AAPL financial health",
+                            "reasoning": "Test tool coordination",
+                            "priority": "high",
+                            "focus_area": "financial analysis",
+                            "expected_outcome": "Financial health assessment"
+                        },
+                        {
+                            "description": "Gather market data",
+                            "reasoning": "Test tool coordination",
+                            "priority": "medium",
+                            "focus_area": "market research",
+                            "expected_outcome": "Market analysis"
+                        }
+                    ],
+                    priority_areas=["financial analysis", "market research"],
+                    reasoning="Test tool coordination workflow"
+                )
+                
                 mock_analysis = InvestmentAnalysis(
                     query=query,
                     context=context,
+                    plan=basic_plan,
                     financial_metrics={"pe_ratio": 28.5, "roe": 0.20},
                     findings={
                         "summary": "Strong financial position",
@@ -273,15 +332,18 @@ class TestDependencyInjection:
     @pytest.mark.integration
     def test_dependency_initialization(self, mock_env_vars):
         """Test that dependencies are properly initialized."""
-        from agents.dependencies import ResearchDependencies
+        from agents.dependencies import initialize_dependencies
         
-        deps = ResearchDependencies()
+        deps = initialize_dependencies(
+            query="Test investment query",
+            context="Test context"
+        )
         
         # Verify all dependencies are initialized
-        assert deps.openai_client is not None
-        assert deps.chroma_client is not None
+        assert deps.vector_db is not None
         assert deps.searxng_client is not None
-        assert deps.knowledge_base_path is not None
+        assert deps.knowledge_base is not None
+        assert deps.current_query == "Test investment query"
     
     @pytest.mark.integration
     def test_shared_dependencies(self, mock_research_dependencies):
@@ -293,5 +355,5 @@ class TestDependencyInjection:
         deps2 = mock_research_dependencies
         
         # Should be the same instances (dependency injection)
-        assert deps1.chroma_client is deps2.chroma_client
+        assert deps1.vector_db is deps2.vector_db
         assert deps1.searxng_client is deps2.searxng_client

@@ -95,16 +95,17 @@ def sample_research_plan():
         steps=[
             ResearchStep(
                 description="Search for recent financial performance",
-                reasoning="Need current financial data",
-                priority="high"
+                focus_area="Data gathering",
+                expected_outcome="Current financial data and metrics"
             ),
             ResearchStep(
                 description="Analyze competitive position",
-                reasoning="Understand market dynamics",
-                priority="medium"
+                focus_area="Analysis",
+                expected_outcome="Understanding of market dynamics and competitive advantages"
             )
         ],
-        reasoning="Comprehensive analysis approach"
+        reasoning="Comprehensive analysis approach",
+        priority_areas=["Financial Performance", "Market Position", "Valuation"]
     )
 
 
@@ -141,12 +142,12 @@ def sample_investment_findings():
 
 
 @pytest.fixture
-def sample_investment_analysis(sample_financial_metrics, sample_investment_findings):
+def sample_investment_analysis(sample_research_plan, sample_investment_findings):
     """Sample complete investment analysis for testing."""
     return InvestmentAnalysis(
         query="Should I invest in AAPL?",
         context="Long-term growth investment",
-        financial_metrics=sample_financial_metrics,
+        plan=sample_research_plan,
         findings=sample_investment_findings
     )
 
@@ -197,19 +198,27 @@ def knowledge_base_files(temp_dir):
 
 @pytest.fixture
 async def mock_research_dependencies(
-    mock_openai_client,
     mock_chroma_client,
     mock_searxng_client,
     knowledge_base_files
 ):
     """Mock dependencies for research agents."""
-    from agents.dependencies import ResearchDependencies
+    from agents.dependencies import ResearchDependencies, ChromaDBClient, KnowledgeBase, SearxNGClient
+    from unittest.mock import Mock
+    
+    # Create proper mock instances that match the schema
+    mock_vector_db = ChromaDBClient(persist_directory=str(knowledge_base_files))
+    mock_knowledge_base = KnowledgeBase(base_path=str(knowledge_base_files))
+    
+    # Create a real SearxNGClient instance but mock its methods
+    real_searxng_client = SearxNGClient()
+    real_searxng_client.search = mock_searxng_client.search
     
     deps = ResearchDependencies(
-        openai_client=mock_openai_client,
-        chroma_client=mock_chroma_client,
-        searxng_client=mock_searxng_client,
-        knowledge_base_path=knowledge_base_files
+        vector_db=mock_vector_db,
+        searxng_client=real_searxng_client,
+        knowledge_base=mock_knowledge_base,
+        current_query="Test investment query"
     )
     return deps
 

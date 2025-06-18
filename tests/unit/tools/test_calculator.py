@@ -218,6 +218,98 @@ class TestCalculatorIntegration:
         # Should contain calculated metrics
         assert "p/e ratio" in result_lower or "debt-to-equity" in result_lower
     
+    def test_complex_financial_document_parsing(self):
+        """Test parsing complex financial document with multiple formats."""
+        text = """
+        Comprehensive Financial Analysis - Q3 2023
+        
+        Revenue Performance:
+        - Total revenue: $3.2 billion (up 15% YoY)
+        - Services revenue: $890 million
+        - Product revenue: $2.31B
+        
+        Profitability Metrics:
+        Net income for the quarter: $450M
+        EBITDA: $720 million
+        Gross margin: 65.2%
+        
+        Balance Sheet Summary:
+        Total debt: $1.1 billion
+        Shareholders equity: $2.8B
+        Cash position: $950M
+        
+        Per Share Data:
+        Earnings per share: $2.85
+        Book value per share: $18.50
+        Current stock price: $42.75
+        """
+        
+        metrics = ["pe_ratio", "debt_to_equity", "profit_margin", "price_to_book", "return_on_equity"]
+        result = perform_financial_calculations(text, metrics)
+        
+        # Should successfully calculate multiple metrics
+        assert "P/E Ratio:" in result
+        assert "Debt-to-Equity Ratio:" in result
+        assert "Profit Margin:" in result
+        assert "Price-to-Book Ratio:" in result
+    
+    def test_international_formats_and_currencies(self):
+        """Test handling of international number formats."""
+        text = """
+        Global Technology Company Results:
+        
+        Financial Summary:
+        Revenue: $4,750.5 million (€4.2B equivalent)
+        Net income: $892.3M
+        Stock price: $85.50
+        EPS: $3.25
+        
+        Regional Breakdown:
+        - North America: $2.1 billion
+        - Europe: €1.8 billion ($2.0B)
+        - Asia Pacific: $650M
+        
+        Balance Sheet:
+        Total debt: $1,250.0 million
+        Total equity: $3,800M
+        Free cash flow: $445 million
+        """
+        
+        metrics = ["pe_ratio", "debt_to_equity", "profit_margin"]
+        result = perform_financial_calculations(text, metrics)
+        
+        # Should handle mixed formats correctly
+        assert "Financial Metrics Calculation Results:" in result
+        # At least one metric should be calculated
+        assert ("P/E Ratio:" in result or "Debt-to-Equity" in result or "Profit Margin:" in result)
+    
+    def test_edge_case_zero_and_negative_values(self):
+        """Test handling of zero and negative financial values."""
+        text = """
+        Distressed Company Analysis:
+        
+        Current Financial Position:
+        Revenue: $50 million (down 25% YoY)
+        Net income: -$15 million (loss)
+        Stock price: $2.50
+        Earnings per share: -$0.75
+        
+        Balance Sheet Issues:
+        Total debt: $200 million
+        Total equity: $25 million
+        Cash: $5 million
+        """
+        
+        metrics = ["pe_ratio", "debt_to_equity", "profit_margin"]
+        result = perform_financial_calculations(text, metrics)
+        
+        # Should handle negative values gracefully
+        assert "Financial Metrics Calculation Results:" in result
+        # P/E ratio should not be calculated for negative earnings
+        # But debt-to-equity should still work
+        assert "Debt-to-Equity Ratio:" in result
+        assert "Profit Margin:" in result  # Should show negative margin
+    
     def test_mixed_currency_formats(self):
         """Test handling different value formats."""
         text = """

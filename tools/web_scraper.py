@@ -35,9 +35,15 @@ def extract_article_content(soup: BeautifulSoup) -> str:
     Returns:
         Extracted text content
     """
-    # Remove script and style elements
-    for script in soup(["script", "style", "nav", "header", "footer"]):
+    # Remove script and style elements and unwanted sections
+    for script in soup(["script", "style", "nav", "header", "footer", "aside"]):
         script.decompose()
+    
+    # Remove elements with common unwanted class names
+    unwanted_classes = ['header', 'footer', 'sidebar', 'nav', 'navigation', 'ad', 'advertisement']
+    for class_name in unwanted_classes:
+        for element in soup.find_all(class_=class_name):
+            element.decompose()
     
     # Try common article selectors
     selectors = [
@@ -105,8 +111,8 @@ def clean_text(text: str) -> str:
     # Remove excessive whitespace
     text = re.sub(r'\s+', ' ', text)
     
-    # Remove special characters that might cause issues
-    text = re.sub(r'[^\w\s\.\,\!\?\-\:\;\(\)]', '', text)
+    # Remove special characters that might cause issues, but preserve financial symbols
+    text = re.sub(r'[^\w\s\.\,\!\?\-\:\;\(\)\$\%]', '', text)
     
     return text.strip()
 
