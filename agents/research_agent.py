@@ -7,7 +7,7 @@ from config import get_openai_model
 
 # Configure OpenRouter
 openai_model = get_openai_model()
-from tools.vector_search import search_internal_docs as _search_internal_docs, format_document_results
+from tools.vector_search import search_internal_docs as _search_internal_docs, format_document_results, search_with_query_enhancement
 from tools.web_search import search_web as _search_web, format_search_results  
 from tools.web_scraper import scrape_webpage as _scrape_webpage
 from tools.calculator import perform_financial_calculations
@@ -45,21 +45,34 @@ Always provide a confidence score based on data quality and comprehensiveness.""
 async def search_internal_docs(
     ctx: RunContext[ResearchDependencies], 
     query: str,
-    doc_type: str = "all"
+    doc_type: str = "all",
+    enhance_query: bool = True
 ) -> str:
-    """Search internal investment documents (SEC filings, earnings, analyst reports).
+    """Search internal investment documents (SEC filings, earnings, analyst reports) with enhanced query processing.
     
     Args:
         query: Search query for documents
         doc_type: Type of document (10k, 10q, earnings, analyst, all)
+        enhance_query: Whether to enhance query for better retrieval
     """
-    results = await _search_internal_docs(
-        ctx.deps.vector_db,
-        query,
-        doc_type=doc_type,
-        n_results=5
-    )
-    return format_document_results(results)
+    if enhance_query and ctx.deps.research_context:
+        results, enhanced_query = await search_with_query_enhancement(
+            ctx.deps.vector_db,
+            query,
+            doc_type=doc_type,
+            n_results=5,
+            research_context=ctx.deps.research_context
+        )
+        return f"Query Enhanced: '{enhanced_query}'\n\n{format_document_results(results)}"
+    else:
+        results = await _search_internal_docs(
+            ctx.deps.vector_db,
+            query,
+            doc_type=doc_type,
+            n_results=5,
+            enhance_query=enhance_query
+        )
+        return format_document_results(results)
 
 
 @research_agent.tool

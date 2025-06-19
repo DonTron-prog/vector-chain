@@ -60,8 +60,41 @@ class WebSearchResult(BaseModel):
     published_date: Optional[str] = None
 
 
+class DocumentMetadata(BaseModel):
+    """Enhanced document metadata."""
+    company: str
+    doc_type: str
+    date: Optional[str] = None
+    section: Optional[str] = None
+    page_number: Optional[int] = None
+    file_path: Optional[str] = None
+
+
 class DocumentSearchResult(BaseModel):
-    """Document search result from vector DB."""
+    """Enhanced document search result from vector DB."""
     content: str
-    metadata: Dict[str, Any] = Field(default_factory=dict)
-    score: float = Field(default=0.0)
+    metadata: DocumentMetadata
+    score: float = Field(ge=0.0, le=1.0, description="Relevance score between 0 and 1")
+    chunk_id: Optional[str] = None
+    
+    @property
+    def relevance_level(self) -> str:
+        """Human-readable relevance level."""
+        if self.score >= 0.9: 
+            return "Highly Relevant"
+        elif self.score >= 0.7: 
+            return "Relevant"
+        elif self.score >= 0.5: 
+            return "Somewhat Relevant"
+        else: 
+            return "Low Relevance"
+
+
+class RAGMetrics(BaseModel):
+    """RAG retrieval metrics for performance tracking."""
+    query: str
+    num_results: int
+    avg_relevance_score: float
+    top_score: float
+    retrieval_time_ms: float
+    enhanced_query: Optional[str] = None

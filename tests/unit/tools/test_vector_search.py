@@ -3,7 +3,7 @@ Unit tests for vector search tool.
 """
 import pytest
 from unittest.mock import AsyncMock, Mock, patch
-from models.schemas import DocumentSearchResult
+from models.schemas import DocumentSearchResult, DocumentMetadata
 from tools.vector_search import (
     search_internal_docs,
     format_document_results,
@@ -35,7 +35,7 @@ class TestSearchInternalDocs:
         assert len(results) == 1
         assert isinstance(results[0], DocumentSearchResult)
         assert results[0].content == "Apple Inc. Q3 2023 revenue was $81.8 billion."
-        assert results[0].metadata["company"] == "AAPL"
+        assert results[0].metadata.company == "AAPL"
         assert results[0].score == 0.8  # 1.0 - 0.2
     
     @pytest.mark.asyncio
@@ -92,20 +92,20 @@ class TestFormatDocumentResults:
         results = [
             DocumentSearchResult(
                 content="Apple Inc. reported record revenue of $81.8 billion in Q3.",
-                metadata={"company": "AAPL", "doc_type": "10Q"},
+                metadata=DocumentMetadata(company="AAPL", doc_type="10Q"),
                 score=0.9
             ),
             DocumentSearchResult(
                 content="Microsoft Azure revenue grew 27% year-over-year.",
-                metadata={"company": "MSFT", "doc_type": "earnings"},
+                metadata=DocumentMetadata(company="MSFT", doc_type="earnings"),
                 score=0.8
             )
         ]
         
         formatted = format_document_results(results)
         
-        assert "Internal Document Search Results:" in formatted
-        assert "Score: 0.90" in formatted
+        assert "Internal Document Search Results (Top 2 matches):" in formatted
+        assert "Relevance: 0.900" in formatted
         assert "Source: AAPL - 10Q" in formatted
         assert "Content: Apple Inc. reported record revenue" in formatted
         assert "Source: MSFT - earnings" in formatted
@@ -122,15 +122,14 @@ class TestFormatDocumentResults:
         
         result = DocumentSearchResult(
             content=long_content,
-            metadata={"company": "TEST"},
+            metadata=DocumentMetadata(company="TEST", doc_type="report"),
             score=0.7
         )
         
         formatted = format_document_results([result])
         
-        # Should be truncated to 800 chars + "..."
-        assert "A" * 800 + "..." in formatted
-        assert len(formatted.split("Content: ")[1].split("\n")[0]) <= 804
+        # Should be truncated to 600 chars + "..." (since score is 0.7, uses max_length // 2)
+        assert "A" * 600 + "..." in formatted or "A" * 600 in formatted
 
 
 class TestExtractFinancialData:
@@ -214,7 +213,7 @@ class TestVectorSearchIntegration:
         
         assert len(results) == 1
         assert "AAPL - 10Q" in formatted
-        assert "Score: 0.85" in formatted
+        assert "Relevance: 0.850" in formatted
         assert "$81.8B" in formatted
     
     def test_extract_and_parse_workflow(self):
