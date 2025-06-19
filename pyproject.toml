@@ -10,7 +10,7 @@ packages = [{include = "agents"}, {include = "tools"}, {include = "models"}]
 python = "^3.11"
 instructor = "^1.6.1"
 pydantic = ">=2.10.3,<3.0.0" 
-pydantic-ai = "^0.0.14"
+pydantic-ai = {version = "^0.0.14", extras = ["logfire"]}
 aiohttp = "^3.9.0"
 sympy = "^1.13.3"
 python-dotenv = ">=1.0.1,<2.0.0"

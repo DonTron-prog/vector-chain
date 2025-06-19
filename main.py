@@ -9,6 +9,10 @@ from models.schemas import InvestmentAnalysis
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+from logfire_config import configure_logfire, create_logfire_span, log_research_start, log_research_complete, log_research_error
+
+# Configure Logfire for observability
+logfire = configure_logfire()
 
 
 async def research_investment(
@@ -33,49 +37,60 @@ async def research_investment(
     console = Console()
     console.print(f"🔍 [bold blue]Starting investment research for:[/bold blue] {query}")
     
-    try:
-        # Initialize dependencies
-        deps = initialize_dependencies(
-            query=query,
-            context=context,
-            searxng_url=searxng_url,
-            chroma_path=chroma_path,
-            knowledge_path=knowledge_path
-        )
-        
-        # Step 1: Create research plan
-        console.print("📋 [yellow]Creating research plan...[/yellow]")
-        plan = await create_research_plan(query, context)
-        
-        console.print(f"✅ [green]Plan created with {len(plan.steps)} steps:[/green]")
-        for i, step in enumerate(plan.steps, 1):
-            console.print(f"  {i}. [cyan]{step.description}[/cyan]")
-            console.print(f"     Focus: [dim]{step.focus_area}[/dim]")
-        
-        # Step 2: Conduct research with natural tool looping
-        console.print("\\n🔬 [yellow]Conducting research...[/yellow]")
-        research_plan_text = f"Steps: {[step.model_dump() for step in plan.steps]}\\nReasoning: {plan.reasoning}"
-        
-        findings = await conduct_research(
-            query=query,
-            research_plan=research_plan_text,
-            deps=deps
-        )
-        
-        # Step 3: Create final analysis
-        analysis = InvestmentAnalysis(
-            query=query,
-            context=context,
-            plan=plan,
-            findings=findings
-        )
-        
-        console.print("\\n🎯 [bold green]Research completed successfully![/bold green]")
-        return analysis
-        
-    except Exception as e:
-        console.print(f"❌ [bold red]Research failed:[/bold red] {str(e)}")
-        raise
+    # Log research start
+    log_research_start(query, context)
+    
+    # Add Logfire tracing for the entire research workflow
+    with create_logfire_span("investment_research", query=query, context=context):
+        try:
+            # Initialize dependencies
+            with create_logfire_span("initialize_dependencies"):
+                deps = initialize_dependencies(
+                    query=query,
+                    context=context,
+                    searxng_url=searxng_url,
+                    chroma_path=chroma_path,
+                    knowledge_path=knowledge_path
+                )
+            
+            # Step 1: Create research plan
+            console.print("📋 [yellow]Creating research plan...[/yellow]")
+            with create_logfire_span("create_research_plan"):
+                plan = await create_research_plan(query, context)
+            
+            console.print(f"✅ [green]Plan created with {len(plan.steps)} steps:[/green]")
+            for i, step in enumerate(plan.steps, 1):
+                console.print(f"  {i}. [cyan]{step.description}[/cyan]")
+                console.print(f"     Focus: [dim]{step.focus_area}[/dim]")
+            
+            # Step 2: Conduct research with natural tool looping
+            console.print("\\n🔬 [yellow]Conducting research...[/yellow]")
+            research_plan_text = f"Steps: {[step.model_dump() for step in plan.steps]}\\nReasoning: {plan.reasoning}"
+            
+            with create_logfire_span("conduct_research"):
+                findings = await conduct_research(
+                    query=query,
+                    research_plan=research_plan_text,
+                    deps=deps
+                )
+            
+            # Step 3: Create final analysis
+            with create_logfire_span("create_final_analysis"):
+                analysis = InvestmentAnalysis(
+                    query=query,
+                    context=context,
+                    plan=plan,
+                    findings=findings
+                )
+            
+            console.print("\\n🎯 [bold green]Research completed successfully![/bold green]")
+            log_research_complete(query, analysis.findings.confidence_score, len(analysis.findings.sources))
+            return analysis
+            
+        except Exception as e:
+            console.print(f"❌ [bold red]Research failed:[/bold red] {str(e)}")
+            log_research_error(query, str(e), "execution")
+            raise
 
 
 def display_analysis_summary(analysis: InvestmentAnalysis):

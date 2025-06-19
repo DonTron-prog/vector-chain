@@ -14,6 +14,10 @@ pip install -r requirements-dev.txt
 # Required environment variables (available in .env file)
 export OPENROUTER_API_KEY="your-openrouter-api-key"
 export OPENAI_API_KEY="your-openai-api-key"  # fallback
+
+# Optional: Setup Logfire for LLM tracing and observability
+logfire auth
+logfire projects use <your-project-name>
 ```
 
 ### Testing

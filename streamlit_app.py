@@ -9,6 +9,11 @@ import pandas as pd
 from datetime import datetime
 from typing import Optional, List, Dict, Any
 import json
+import logfire
+
+# Configure Logfire for Streamlit app
+from logfire_config import configure_logfire
+logfire = configure_logfire()
 
 # Import the research system
 from main import research_investment, display_analysis_summary
