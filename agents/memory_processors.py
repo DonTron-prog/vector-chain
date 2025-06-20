@@ -122,21 +122,28 @@ def adaptive_memory_processor(messages: List[ModelMessage]) -> List[ModelMessage
     """Adaptive memory processor that combines multiple strategies.
     
     Uses different strategies based on conversation length and content.
+    Optimized for research workflows with many tool calls.
     """
     # For short conversations, keep everything
-    if len(messages) <= 8:
+    if len(messages) <= 6:
         return messages
     
-    # For medium conversations, filter and trim
-    if len(messages) <= 15:
+    # For medium conversations, filter and trim more aggressively
+    if len(messages) <= 12:
         filtered = filter_research_responses(messages)
-        return keep_recent_with_context(filtered, max_messages=10)
+        return keep_recent_with_context(filtered, max_messages=8)
     
-    # For long conversations, use aggressive summarization
-    # This would typically use the async summarizer, but since processors
-    # must be synchronous, we fall back to filtering + trimming
+    # For long conversations (common in research), be more aggressive
+    # Filter out low-value responses and keep only essential context
     filtered = filter_research_responses(messages)
-    return keep_recent_with_context(filtered, max_messages=8)
+    # Keep only the most recent and most important messages
+    result = keep_recent_with_context(filtered, max_messages=6)
+    
+    # Always preserve the first message if it's a system prompt
+    if messages and result and messages[0] != result[0]:
+        result = [messages[0]] + result[1:]
+    
+    return result
 
 
 # Export commonly used processors

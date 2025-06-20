@@ -17,12 +17,6 @@ async def demo_adaptive_research():
         border_style="blue"
     ))
     
-    # Check if we have API keys
-    if not os.getenv("OPENROUTER_API_KEY") and not os.getenv("OPENAI_API_KEY"):
-        console.print("\n[red]⚠️  No API keys found. Please set OPENROUTER_API_KEY or OPENAI_API_KEY[/red]")
-        console.print("\nDemo will show the architecture without making actual API calls.")
-        return
-    
     try:
         from main import adaptive_research_investment
         
@@ -41,7 +35,13 @@ async def demo_adaptive_research():
         console.print(f"Final confidence score: {analysis.findings.confidence_score:.1%}")
         console.print(f"Sources used: {len(analysis.findings.sources)}")
         
-    except ImportError:
+    except Exception as e:
+        # If API keys aren't configured or other issues, show architecture demo
+        if "OPENROUTER_API_KEY" in str(e) or "API" in str(e):
+            console.print(f"\n[yellow]⚠️  API configuration issue: {e}[/yellow]")
+            console.print("[yellow]Demo will show the architecture without making actual API calls.[/yellow]")
+        else:
+            console.print(f"\n[yellow]Running architecture demo due to: {e}[/yellow]")
         console.print("\n[yellow]Demo mode: Showing adaptive memory capabilities[/yellow]")
         
         # Show how memory processing works
@@ -64,6 +64,24 @@ async def demo_adaptive_research():
         console.print(f"After memory processing: {len(processed)} messages")
         console.print("[dim]Memory system preserved important context while managing token usage[/dim]")
         
+        # Show quick feedback demo
+        console.print("\n[cyan]Quick feedback demonstration:[/cyan]")
+        from models.schemas import ExecutionFeedback
+        
+        feedback = ExecutionFeedback(
+            step_completed="Financial data analysis",
+            findings_quality=0.75,
+            data_gaps=["Missing competitive benchmarks"],
+            unexpected_findings=["Strong services growth trend"],
+            suggested_adjustments=["Add competitor analysis"],
+            confidence_level=0.65
+        )
+        
+        console.print(f"  Quality: {feedback.findings_quality:.1%}")
+        console.print(f"  Confidence: {feedback.confidence_level:.1%}")
+        console.print(f"  Gaps identified: {len(feedback.data_gaps)}")
+        console.print(f"  Unexpected discoveries: {len(feedback.unexpected_findings)}")
+        
     except Exception as e:
         console.print(f"\n[red]❌ Demo failed: {e}[/red]")
     
@@ -76,4 +94,15 @@ async def demo_adaptive_research():
     console.print("✅ Token-efficient conversation history")
 
 if __name__ == "__main__":
+    # Load environment variables and check API keys like main.py does
+    try:
+        from config import get_required_env_var
+        get_required_env_var("OPENROUTER_API_KEY")
+        print("✅ API keys configured, running full demo...")
+    except RuntimeError as e:
+        print(f"⚠️  {e}")
+        print("Running architecture demo without API calls...")
+    except ImportError:
+        print("⚠️  Config module not found, running basic demo...")
+    
     asyncio.run(demo_adaptive_research())

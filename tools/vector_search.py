@@ -3,6 +3,12 @@
 from typing import List, Optional, Dict, Any, Tuple
 import logfire
 from models.schemas import DocumentSearchResult, DocumentMetadata, RAGMetrics
+import hashlib
+import time
+
+# Session-level query cache (cache_key -> (results, timestamp))
+_query_cache: Dict[str, Tuple[List[DocumentSearchResult], float]] = {}
+CACHE_TTL = 300  # 5 minutes cache TTL
 
 
 async def search_internal_docs(
@@ -24,6 +30,20 @@ async def search_internal_docs(
     Returns:
         List of document search results
     """
+    # Create cache key from query parameters
+    cache_key = hashlib.md5(f"{query}:{doc_type}:{n_results}:{enhance_query}".encode()).hexdigest()
+    current_time = time.time()
+    
+    # Check cache first
+    if cache_key in _query_cache:
+        cached_results, cache_time = _query_cache[cache_key]
+        if current_time - cache_time < CACHE_TTL:
+            logfire.info("Cache hit for vector search", query=query[:50], cached_results=len(cached_results))
+            return cached_results
+        else:
+            # Remove expired cache entry
+            del _query_cache[cache_key]
+    
     try:
         # Prepare filters
         filters = None
@@ -100,6 +120,10 @@ async def search_internal_docs(
                 doc_results.append(result)
         
         logfire.info("Document search successful", query=query[:100], results_count=len(doc_results))
+        
+        # Cache the results for future use
+        _query_cache[cache_key] = (doc_results, current_time)
+        
         return doc_results
         
     except Exception as e:

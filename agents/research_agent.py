@@ -35,8 +35,14 @@ RESEARCH APPROACH:
 5. Calculate relevant financial metrics from gathered data
 6. Synthesize findings into comprehensive investment analysis
 
+TOOL USAGE EFFICIENCY:
+- Batch similar tool calls together when possible (e.g., multiple financial_metrics calculations)
+- Use comprehensive searches rather than incremental ones
+- Avoid repetitive calls to the same tool with similar parameters
+- Aim for 3-5 tool calls per step maximum for efficiency
+
 You decide when to use each tool and when you have sufficient information.
-Build your analysis through multiple tool calls as needed.
+Build your analysis through targeted, comprehensive tool usage.
 Focus on actionable insights and clear risk/return assessment.
 Always provide a confidence score based on data quality and comprehensiveness."""
 )
