@@ -34,6 +34,84 @@ def keep_recent_planning_messages(messages: List[ModelMessage]) -> List[ModelMes
     return messages[-8:] if len(messages) > 8 else messages
 
 
+def get_minimal_planning_context(messages: List[ModelMessage]) -> List[ModelMessage]:
+    """Get minimal context for planning agent to avoid memory explosion.
+    
+    Keeps only system prompt + last 2 successful planning decisions.
+    """
+    if not messages:
+        return []
+    
+    minimal = []
+    
+    # Always keep system prompt if present
+    if messages and hasattr(messages[0], 'role') and getattr(messages[0], 'role', None) == 'system':
+        minimal.append(messages[0])
+    
+    # Find the last 2 successful planning interactions
+    successful_interactions = []
+    i = len(messages) - 1
+    
+    while i >= 0 and len(successful_interactions) < 2:
+        message = messages[i]
+        
+        # Look for user requests (planning evaluations)
+        if hasattr(message, 'role') and getattr(message, 'role', None) == 'user':
+            content = getattr(message, 'content', '')
+            if 'PLAN UPDATE EVALUATION' in content:
+                # Found a planning request - collect this interaction
+                interaction = [message]  # Start with user request
+                
+                # Look ahead for the assistant response and successful tool call
+                j = i + 1
+                while j < len(messages):
+                    next_msg = messages[j]
+                    interaction.append(next_msg)
+                    
+                    # Stop after we get the successful tool response
+                    if (hasattr(next_msg, 'role') and 
+                        getattr(next_msg, 'role', None) == 'tool' and
+                        'Final result processed' in getattr(next_msg, 'content', '')):
+                        break
+                    j += 1
+                
+                successful_interactions.insert(0, interaction)  # Insert at beginning to maintain order
+        
+        i -= 1
+    
+    # Add successful interactions to minimal context
+    for interaction in successful_interactions:
+        minimal.extend(interaction)
+    
+    return minimal
+
+
+def filter_successful_planning_messages(messages: List[ModelMessage]) -> List[ModelMessage]:
+    """Filter planning messages to keep only successful results, removing duplicates.
+    
+    Removes duplicate tool calls and 'Result tool not used' messages.
+    """
+    filtered = []
+    
+    for message in messages:
+        # Keep user requests and assistant responses
+        if hasattr(message, 'role'):
+            role = getattr(message, 'role', None)
+            if role in ['user', 'assistant']:
+                filtered.append(message)
+            elif role == 'tool':
+                content = getattr(message, 'content', '')
+                # Only keep successful tool responses, skip duplicates
+                if 'Final result processed' in content:
+                    filtered.append(message)
+                # Skip "Result tool not used" messages
+        else:
+            # Keep other message types to be safe
+            filtered.append(message)
+    
+    return filtered
+
+
 adaptive_planning_agent = Agent(
     openai_model,
     result_type=PlanUpdateResponse,
@@ -60,7 +138,9 @@ UPDATE GUIDELINES:
 3. Reorder steps based on new priorities
 4. Remove redundant or low-value steps
 
-Provide clear reasoning for your decision and maintain focus on investment objectives."""
+Provide clear reasoning for your decision and maintain focus on investment objectives.
+
+IMPORTANT: Make only ONE tool call per evaluation. Do not make duplicate calls."""
 )
 
 
@@ -118,13 +198,20 @@ DECISION REQUIRED: Should the research plan be updated based on this feedback?
 
 If updating, provide new/modified steps that address the feedback while maintaining research objectives."""
     
-    # Apply memory processing if history is provided
-    processed_history = None
+    # Simplified approach: Use minimal context to avoid memory explosion
+    # Only keep essential context - last 2 successful plan updates
+    minimal_history = None
     if message_history:
-        processed_history = adaptive_memory_processor(message_history)
+        minimal_history = get_minimal_planning_context(message_history)
     
-    result = await adaptive_planning_agent.run(prompt, message_history=processed_history)
+    result = await adaptive_planning_agent.run(prompt, message_history=minimal_history)
     
-    # Return both the response and the updated message history
-    updated_history = result.all_messages() if message_history is None else message_history + result.new_messages()
+    # Build lean message history - only keep essential messages
+    if message_history is None:
+        updated_history = result.all_messages()
+    else:
+        # Add only the new successful planning messages, filter out duplicates
+        new_messages = filter_successful_planning_messages(result.new_messages())
+        updated_history = message_history + new_messages
+    
     return result.data, updated_history

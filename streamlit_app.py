@@ -16,8 +16,8 @@ from logfire_config import configure_logfire
 logfire = configure_logfire()
 
 # Import the research system
-from main import research_investment, display_analysis_summary
-from models.schemas import InvestmentAnalysis, DocumentSearchResult
+from main import research_investment, adaptive_research_investment, display_analysis_summary
+from models.schemas import InvestmentAnalysis, DocumentSearchResult, AdaptivePlan
 from agents.dependencies import ChromaDBClient, initialize_dependencies
 from tools.vector_search import search_internal_docs
 from config import get_openai_model
@@ -112,7 +112,8 @@ def show_sidebar_configuration():
         "simple_chat": "💬 Simple Chat",
         "rag_only": "📚 RAG Only", 
         "deep_research": "🔍 Deep Research",
-        "full_planning": "🎯 Full Planning"
+        "full_planning": "🎯 Full Planning",
+        "adaptive_memory": "🧠 Adaptive Memory"
     }
     
     current_mode = st.radio(
@@ -125,6 +126,7 @@ def show_sidebar_configuration():
         - **RAG Only**: Search internal documents + analysis  
         - **Deep Research**: Web search + scraping + calculations
         - **Full Planning**: Complete research workflow with planning
+        - **Adaptive Memory**: Advanced planning with memory and plan adaptation
         """
     )
     
@@ -137,15 +139,26 @@ def show_sidebar_configuration():
     # Context Settings
     st.header("📊 Context Settings")
     
-    # SearxNG configuration (for deep research and full planning)
-    if st.session_state.research_mode in ["deep_research", "full_planning"]:
+    # SearxNG configuration (for deep research, full planning, and adaptive memory)
+    if st.session_state.research_mode in ["deep_research", "full_planning", "adaptive_memory"]:
         searxng_url = st.text_input("SearxNG URL", value="http://localhost:8080")
         st.session_state.searxng_url = searxng_url
     
-    # ChromaDB configuration (for RAG and full planning)
-    if st.session_state.research_mode in ["rag_only", "full_planning"]:
+    # ChromaDB configuration (for RAG, full planning, and adaptive memory)
+    if st.session_state.research_mode in ["rag_only", "full_planning", "adaptive_memory"]:
         chroma_path = st.text_input("ChromaDB Path", value="./investment_chroma_db")
         st.session_state.chroma_path = chroma_path
+    
+    # Adaptive memory specific configuration
+    if st.session_state.research_mode == "adaptive_memory":
+        max_adaptations = st.slider(
+            "Max Plan Adaptations",
+            min_value=1,
+            max_value=5,
+            value=3,
+            help="Maximum number of plan adaptations allowed during research"
+        )
+        st.session_state.max_adaptations = max_adaptations
     
     # Additional context for all modes
     chat_context = st.text_area(
@@ -187,7 +200,8 @@ def show_chat_interface():
         "simple_chat": "💬 Simple Chat Mode",
         "rag_only": "📚 RAG Only Mode", 
         "deep_research": "🔍 Deep Research Mode",
-        "full_planning": "🎯 Full Planning Mode"
+        "full_planning": "🎯 Full Planning Mode",
+        "adaptive_memory": "🧠 Adaptive Memory Mode"
     }
     
     st.subheader(mode_labels[st.session_state.research_mode])
@@ -257,7 +271,8 @@ def get_loading_message(mode: str) -> str:
         "simple_chat": "Thinking...",
         "rag_only": "Searching internal documents...",
         "deep_research": "Conducting web research...",
-        "full_planning": "Creating research plan and conducting analysis..."
+        "full_planning": "Creating research plan and conducting analysis...",
+        "adaptive_memory": "🧠 Adaptive planning and research with memory..."
     }
     return messages.get(mode, "Processing...")
 
@@ -275,6 +290,8 @@ async def generate_response(prompt: str) -> Dict[str, Any]:
             return await deep_research_response(prompt)
         elif mode == "full_planning":
             return await full_planning_response(prompt)
+        elif mode == "adaptive_memory":
+            return await adaptive_memory_response(prompt)
         else:
             return {
                 "role": "assistant",
@@ -320,6 +337,8 @@ def export_chat_history():
 async def simple_chat_response(prompt: str) -> Dict[str, Any]:
     """Generate simple chat response using LLM only."""
     try:
+        # Log the start of simple chat
+        logfire.info("Starting simple chat", query=prompt[:100], mode="simple_chat")
         # Create a simple client for direct LLM interaction
         import openai
         from config import get_required_env_var
@@ -358,6 +377,9 @@ async def simple_chat_response(prompt: str) -> Dict[str, Any]:
         
         content = response.choices[0].message.content
         
+        # Log successful completion
+        logfire.info("Simple chat completed", response_length=len(content))
+        
         return {
             "role": "assistant",
             "content": content,
@@ -370,12 +392,15 @@ async def simple_chat_response(prompt: str) -> Dict[str, Any]:
         }
         
     except Exception as e:
+        logfire.error("Simple chat failed", query=prompt[:100], error=str(e))
         raise Exception(f"Simple chat failed: {str(e)}")
 
 
 async def rag_only_response(prompt: str) -> Dict[str, Any]:
     """Generate RAG-only response using vector search + LLM."""
     try:
+        # Log the start of RAG research
+        logfire.info("Starting RAG research", query=prompt[:100], mode="rag_only")
         # Search internal documents
         search_results = await search_internal_docs(
             st.session_state.vector_db,
@@ -441,6 +466,12 @@ async def rag_only_response(prompt: str) -> Dict[str, Any]:
         # Calculate confidence based on search results quality
         confidence_score = min(0.9, len(search_results) * 0.15 + 0.3) if search_results else 0.2
         
+        # Log successful completion
+        logfire.info("RAG research completed", 
+                    documents_found=len(search_results), 
+                    confidence_score=confidence_score,
+                    sources_count=len(sources))
+        
         return {
             "role": "assistant",
             "content": content,
@@ -455,6 +486,7 @@ async def rag_only_response(prompt: str) -> Dict[str, Any]:
         }
         
     except Exception as e:
+        logfire.error("RAG research failed", query=prompt[:100], error=str(e))
         raise Exception(f"RAG search failed: {str(e)}")
 
 
@@ -629,6 +661,106 @@ async def full_planning_response(prompt: str) -> Dict[str, Any]:
         
     except Exception as e:
         raise Exception(f"Full planning research failed: {str(e)}")
+
+
+async def adaptive_memory_response(prompt: str) -> Dict[str, Any]:
+    """Generate adaptive memory response using advanced planning with memory."""
+    try:
+        # Log the start of adaptive memory research
+        logfire.info("Starting adaptive memory research", 
+                    query=prompt[:100], 
+                    mode="adaptive_memory",
+                    max_adaptations=getattr(st.session_state, 'max_adaptations', 3))
+        
+        # Use adaptive research workflow with memory
+        searxng_url = getattr(st.session_state, 'searxng_url', 'http://localhost:8080')
+        chroma_path = getattr(st.session_state, 'chroma_path', './investment_chroma_db')
+        max_adaptations = getattr(st.session_state, 'max_adaptations', 3)
+        
+        with logfire.span("adaptive_research_execution", query=prompt[:50]):
+            analysis = await adaptive_research_investment(
+                query=prompt,
+                context=st.session_state.chat_context,
+                searxng_url=searxng_url,
+                chroma_path=chroma_path,
+                knowledge_path="./knowledge_base",
+                max_adaptations=max_adaptations
+            )
+        
+        # Log successful completion
+        logfire.info("Adaptive memory research completed", 
+                    confidence_score=analysis.findings.confidence_score,
+                    sources_count=len(analysis.findings.sources),
+                    plan_steps=len(analysis.plan.steps))
+        
+        # Format the comprehensive analysis for chat with adaptation info
+        content = f"""## 🧠 Adaptive Memory Research Results
+
+**Query:** {analysis.query}
+
+**Research Evolution:** The AI planning agent dynamically adapted the research strategy based on execution feedback and memory of previous findings.
+
+**Summary:**
+{analysis.findings.summary}
+
+**Key Insights:**
+{chr(10).join(f'• {insight}' for insight in analysis.findings.key_insights)}
+
+**Risk Factors:**
+{chr(10).join(f'• {risk}' for risk in analysis.findings.risk_factors)}
+
+**Opportunities:**
+{chr(10).join(f'• {opportunity}' for opportunity in analysis.findings.opportunities)}
+
+**Investment Recommendation:**
+{analysis.findings.recommendation}
+
+**Adaptive Features:**
+• Planning agent used memory to track research progress
+• Plan adapted based on quality and confidence feedback
+• Research evolved to address discovered data gaps
+• Final confidence: {analysis.findings.confidence_score:.1%}"""
+        
+        # Add financial metrics if available
+        metrics = analysis.findings.financial_metrics
+        if any([metrics.pe_ratio, metrics.debt_to_equity, metrics.return_on_equity]):
+            content += "\n\n**Financial Metrics:**\n"
+            if metrics.pe_ratio:
+                content += f"• P/E Ratio: {metrics.pe_ratio:.2f}\n"
+            if metrics.debt_to_equity:
+                content += f"• Debt/Equity: {metrics.debt_to_equity:.2f}\n"
+            if metrics.return_on_equity:
+                content += f"• ROE: {metrics.return_on_equity:.2%}\n"
+            if metrics.profit_margin:
+                content += f"• Profit Margin: {metrics.profit_margin:.2%}\n"
+            if metrics.revenue_growth:
+                content += f"• Revenue Growth: {metrics.revenue_growth:.2%}\n"
+        
+        # Store full analysis in session state for potential export
+        st.session_state.research_results = analysis
+        
+        return {
+            "role": "assistant",
+            "content": content,
+            "mode": "adaptive_memory",
+            "timestamp": datetime.now(),
+            "metadata": {
+                "sources": analysis.findings.sources,
+                "confidence_score": analysis.findings.confidence_score,
+                "plan_steps": len(analysis.plan.steps),
+                "mode_name": "Adaptive Memory",
+                "full_analysis": True,
+                "adaptive_features": True,
+                "max_adaptations_used": max_adaptations
+            }
+        }
+        
+    except Exception as e:
+        # Log the error
+        logfire.error("Adaptive memory research failed", 
+                     query=prompt[:100], 
+                     error=str(e))
+        raise Exception(f"Adaptive memory research failed: {str(e)}")
 
 
 def show_document_manager():
