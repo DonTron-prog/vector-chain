@@ -98,3 +98,39 @@ class RAGMetrics(BaseModel):
     top_score: float
     retrieval_time_ms: float
     enhanced_query: Optional[str] = None
+
+
+class ExecutionFeedback(BaseModel):
+    """Feedback from research agent execution to planning agent."""
+    step_completed: str = Field(..., description="Description of completed research step")
+    findings_quality: float = Field(..., ge=0.0, le=1.0, description="Quality of findings (0-1)")
+    data_gaps: List[str] = Field(default_factory=list, description="Identified data gaps or missing information")
+    unexpected_findings: List[str] = Field(default_factory=list, description="Unexpected discoveries during research")
+    suggested_adjustments: List[str] = Field(default_factory=list, description="Suggested plan modifications")
+    confidence_level: float = Field(..., ge=0.0, le=1.0, description="Confidence in current research direction")
+    next_step_recommendation: Optional[str] = None
+
+
+class PlanUpdateRequest(BaseModel):
+    """Request to update research plan based on execution feedback."""
+    current_step: int = Field(..., description="Current step number being executed")
+    feedback: ExecutionFeedback = Field(..., description="Feedback from research execution")
+    remaining_steps: List[ResearchStep] = Field(..., description="Remaining steps in current plan")
+
+
+class PlanUpdateResponse(BaseModel):
+    """Response from planning agent with updated plan."""
+    should_update: bool = Field(..., description="Whether plan needs updating")
+    updated_steps: Optional[List[ResearchStep]] = None
+    reasoning: str = Field(..., description="Reasoning for update decision")
+    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence in updated plan")
+
+
+class AdaptivePlan(BaseModel):
+    """Research plan that evolves based on execution feedback."""
+    original_plan: ResearchPlan = Field(..., description="Original research plan")
+    current_steps: List[ResearchStep] = Field(..., description="Current active steps")
+    completed_steps: List[ResearchStep] = Field(default_factory=list, description="Successfully completed steps")
+    adaptation_history: List[str] = Field(default_factory=list, description="History of plan adaptations")
+    total_adaptations: int = Field(default=0, description="Number of plan adaptations made")
+    current_confidence: float = Field(default=0.5, ge=0.0, le=1.0, description="Current confidence in plan")

@@ -2,8 +2,9 @@
 
 from pydantic_ai import Agent, RunContext
 from agents.dependencies import ResearchDependencies
-from models.schemas import InvestmentFindings
+from models.schemas import InvestmentFindings, ExecutionFeedback
 from config import get_openai_model
+from .memory_processors import filter_research_responses
 
 # Configure OpenRouter
 openai_model = get_openai_model()
@@ -38,6 +39,31 @@ You decide when to use each tool and when you have sufficient information.
 Build your analysis through multiple tool calls as needed.
 Focus on actionable insights and clear risk/return assessment.
 Always provide a confidence score based on data quality and comprehensiveness."""
+)
+
+
+feedback_agent = Agent(
+    openai_model,
+    deps_type=ResearchDependencies,
+    result_type=ExecutionFeedback,
+    system_prompt="""You are a research execution evaluator that generates feedback for adaptive planning.
+
+Your role is to assess the quality and completeness of research findings from a completed step and provide structured feedback to help improve the overall research plan.
+
+EVALUATION CRITERIA:
+- Findings Quality (0-1): How comprehensive and useful are the findings?
+- Data Gaps: What important information is missing or unclear?
+- Unexpected Findings: What valuable discoveries weren't anticipated?
+- Confidence Level (0-1): How confident are you in the research direction?
+
+FEEDBACK GUIDELINES:
+- Be specific about data gaps and their impact
+- Highlight unexpected findings that could change strategy
+- Suggest concrete plan adjustments
+- Assess whether current approach will achieve objectives
+- Consider time and resource constraints
+
+Your feedback helps the planning agent decide whether to adapt the research strategy."""
 )
 
 
@@ -151,4 +177,49 @@ Current Context: {deps.research_context}
 Conduct comprehensive investment research following the plan. Use all available tools to gather data, analyze the investment opportunity, and provide actionable insights."""
 
     result = await research_agent.run(prompt, deps=deps)
+    return result.data
+
+
+async def generate_execution_feedback(
+    step_description: str,
+    findings: InvestmentFindings,
+    original_expectations: str,
+    deps: ResearchDependencies
+) -> ExecutionFeedback:
+    """Generate structured feedback about research execution for adaptive planning.
+    
+    Args:
+        step_description: Description of the completed research step
+        findings: Research findings from the step
+        original_expectations: What was expected from this step
+        deps: Research dependencies
+        
+    Returns:
+        ExecutionFeedback: Structured feedback for planning agent
+    """
+    prompt = f"""RESEARCH STEP EVALUATION
+
+Completed Step: {step_description}
+Original Expectations: {original_expectations}
+
+FINDINGS SUMMARY:
+- Key Insights: {findings.key_insights}
+- Risk Factors: {findings.risk_factors}
+- Opportunities: {findings.opportunities}
+- Confidence Score: {findings.confidence_score}
+- Sources Used: {len(findings.sources)}
+
+RESEARCH CONTEXT: {deps.research_context}
+
+Evaluate this research step execution and provide structured feedback:
+
+1. How well did the findings meet expectations? (findings_quality: 0-1)
+2. What important data is still missing? (data_gaps)
+3. What unexpected valuable discoveries were made? (unexpected_findings)
+4. How confident are you in the current research direction? (confidence_level: 0-1)
+5. What adjustments would improve the remaining research? (suggested_adjustments)
+
+Consider data quality, completeness, and strategic value of findings."""
+
+    result = await feedback_agent.run(prompt, deps=deps)
     return result.data

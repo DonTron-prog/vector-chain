@@ -20,8 +20,15 @@ async def fetch_and_parse(url: str, timeout: int = 30) -> BeautifulSoup:
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
     }
     
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url, headers=headers, timeout=timeout) as response:
+    connector = aiohttp.TCPConnector(limit=100)
+    timeout_config = aiohttp.ClientTimeout(total=timeout)
+    
+    async with aiohttp.ClientSession(
+        connector=connector,
+        timeout=timeout_config,
+        max_line_size=16384  # Increase from default 8190 to 16KB
+    ) as session:
+        async with session.get(url, headers=headers) as response:
             html = await response.text()
             return BeautifulSoup(html, 'html.parser')
 
