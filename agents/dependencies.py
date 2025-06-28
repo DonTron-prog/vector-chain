@@ -7,6 +7,7 @@ import aiohttp
 import asyncio
 import time
 import logfire
+import os
 from pathlib import Path
 from typing import Tuple
 
@@ -170,12 +171,57 @@ class KnowledgeBase:
         return []
 
 
+class FinancialDataClient:
+    """Client for real-time financial data via Alpha Vantage API."""
+    
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+        self.base_url = "https://www.alphavantage.co/query"
+        self._session = None
+        
+    async def __aenter__(self):
+        self._session = aiohttp.ClientSession()
+        return self
+        
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self._session:
+            await self._session.close()
+    
+    async def get_quote(self, symbol: str) -> dict:
+        """Get real-time stock quote."""
+        params = {
+            "function": "GLOBAL_QUOTE",
+            "symbol": symbol,
+            "apikey": self.api_key
+        }
+        
+        try:
+            if not self._session:
+                self._session = aiohttp.ClientSession()
+                
+            async with self._session.get(self.base_url, params=params) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    logfire.info("Financial data API call successful", symbol=symbol)
+                    return data
+                else:
+                    raise Exception(f"API request failed with status {response.status}")
+        except Exception as e:
+            logfire.error("Financial data API call failed", symbol=symbol, error=str(e))
+            raise
+    
+    def is_available(self) -> bool:
+        """Check if financial data client is properly configured."""
+        return bool(self.api_key)
+
+
 class ResearchDependencies(BaseModel):
     """Shared context and resources for investment research agents."""
     
     vector_db: ChromaDBClient
     searxng_client: SearxNGClient  
     knowledge_base: KnowledgeBase
+    financial_data_client: Optional[FinancialDataClient] = None
     current_query: str
     research_context: str = ""
     accumulated_findings: str = ""
@@ -193,10 +239,20 @@ def initialize_dependencies(
 ) -> ResearchDependencies:
     """Initialize all dependencies for research agents."""
     
+    # Initialize financial data client if API key is available
+    financial_client = None
+    alpha_vantage_key = os.getenv("ALPHA_VANTAGE_API_KEY")
+    if alpha_vantage_key:
+        financial_client = FinancialDataClient(alpha_vantage_key)
+        logfire.info("Financial data client initialized with Alpha Vantage")
+    else:
+        logfire.warning("ALPHA_VANTAGE_API_KEY not found - financial data features disabled")
+    
     return ResearchDependencies(
         vector_db=ChromaDBClient(chroma_path),
         searxng_client=SearxNGClient(searxng_url),
         knowledge_base=KnowledgeBase(knowledge_path),
+        financial_data_client=financial_client,
         current_query=query,
         research_context=context
     )

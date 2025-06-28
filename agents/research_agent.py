@@ -11,7 +11,8 @@ openai_model = get_openai_model()
 from tools.vector_search import search_internal_docs as _search_internal_docs, format_document_results, search_with_query_enhancement
 from tools.web_search import search_web as _search_web, format_search_results  
 from tools.web_scraper import scrape_webpage as _scrape_webpage
-from tools.calculator import perform_financial_calculations
+from tools.calculator import perform_financial_calculations, calculate_live_metrics, comprehensive_financial_analysis
+from tools.financial_data import get_real_time_quote, get_historical_analysis, get_financial_fundamentals
 
 
 research_agent = Agent(
@@ -25,15 +26,25 @@ Use available tools to gather information and build a complete investment analys
 - search_internal_docs: Search SEC filings, earnings reports, analyst reports in vector database
 - search_web: Search current market news, trends, and analysis 
 - scrape_webpage: Extract detailed content from specific web pages
-- calculate_financial_metrics: Calculate financial ratios and metrics
+- calculate_financial_metrics: Calculate financial ratios and metrics from text data
+- calculate_live_financial_metrics: Calculate real-time P/E and other metrics using live market data
+- comprehensive_financial_analysis: Perform complete financial analysis combining all data sources
+- get_stock_quote: Get real-time stock quotes with current price, volume, and change data
+- get_stock_history: Get historical price analysis for trend identification
+- get_stock_fundamentals: Get financial statement data for fundamental analysis
 
 RESEARCH APPROACH:
 1. Start by understanding the investment query and research plan
-2. Search internal documents for fundamental company data (financials, business model, risks)
-3. Search web for current market sentiment, news, and trends
-4. Scrape specific pages for detailed analysis when needed
-5. Calculate relevant financial metrics from gathered data
-6. Synthesize findings into comprehensive investment analysis
+2. Get real-time stock quotes for current market position
+3. Search internal documents for fundamental company data (financials, business model, risks)
+4. Retrieve financial fundamentals from APIs for accurate valuation data
+5. Analyze historical price trends for technical patterns
+6. Search web for current market sentiment, news, and trends
+7. Scrape specific pages for detailed analysis when needed
+8. Calculate relevant financial metrics from gathered data
+9. Use calculate_live_financial_metrics for real-time valuation analysis
+10. Apply comprehensive_financial_analysis for complete investment assessment
+11. Synthesize findings into comprehensive investment analysis
 
 TOOL USAGE EFFICIENCY:
 - Batch similar tool calls together when possible (e.g., multiple financial_metrics calculations)
@@ -157,6 +168,90 @@ async def calculate_financial_metrics(
         metrics: List of metrics to calculate (pe_ratio, debt_ratio, roe, profit_margin, etc.)
     """
     return perform_financial_calculations(financial_data, metrics)
+
+
+@research_agent.tool
+async def get_stock_quote(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Get real-time stock quote with current price, volume, and change data.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL', 'MSFT')
+    
+    Returns:
+        Formatted string with current stock price information
+    """
+    return await get_real_time_quote(symbol)
+
+
+@research_agent.tool
+async def get_stock_history(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str,
+    period: str = "daily"
+) -> str:
+    """Get historical price analysis for trend identification.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL', 'MSFT')
+        period: Time period for analysis ('daily', 'weekly', 'monthly')
+    
+    Returns:
+        Formatted string with historical price trends and analysis
+    """
+    return await get_historical_analysis(symbol, period)
+
+
+@research_agent.tool
+async def get_stock_fundamentals(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Get financial statement data for fundamental analysis.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL', 'MSFT')
+    
+    Returns:
+        Formatted string with key financial metrics from statements
+    """
+    return await get_financial_fundamentals(symbol)
+
+
+@research_agent.tool
+async def calculate_live_financial_metrics(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Calculate financial metrics using live market data including real-time P/E ratio.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL', 'MSFT')
+    
+    Returns:
+        Formatted string with live financial metrics including P/E ratio,
+        current price, and combined quote/fundamentals data
+    """
+    return await calculate_live_metrics(symbol)
+
+
+@research_agent.tool
+async def comprehensive_financial_analysis(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Perform comprehensive financial analysis combining all data sources.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL', 'MSFT')
+    
+    Returns:
+        Complete financial analysis report with live metrics, valuation analysis,
+        and investment considerations
+    """
+    return await comprehensive_financial_analysis(symbol)
 
 
 async def conduct_research(

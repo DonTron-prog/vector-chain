@@ -134,3 +134,93 @@ class AdaptivePlan(BaseModel):
     adaptation_history: List[str] = Field(default_factory=list, description="History of plan adaptations")
     total_adaptations: int = Field(default=0, description="Number of plan adaptations made")
     current_confidence: float = Field(default=0.5, ge=0.0, le=1.0, description="Current confidence in plan")
+
+
+class StockQuote(BaseModel):
+    """Real-time stock quote data."""
+    symbol: str = Field(..., description="Stock symbol")
+    price: float = Field(..., description="Current stock price")
+    change: float = Field(..., description="Price change from previous close")
+    change_percent: str = Field(..., description="Percentage change from previous close")
+    volume: int = Field(..., description="Trading volume")
+    previous_close: float = Field(..., description="Previous closing price")
+    open_price: float = Field(..., description="Opening price")
+    high: float = Field(..., description="Day's high price")
+    low: float = Field(..., description="Day's low price")
+    latest_trading_day: str = Field(..., description="Latest trading day")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class HistoricalData(BaseModel):
+    """Historical stock price data."""
+    symbol: str = Field(..., description="Stock symbol")
+    interval: str = Field(..., description="Data interval (daily, weekly, monthly)")
+    prices: List[Dict[str, Any]] = Field(..., description="Historical price data points")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="API metadata")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class StockQuote(BaseModel):
+    """Real-time stock quote data."""
+    symbol: str = Field(..., description="Stock symbol")
+    price: float = Field(..., description="Current stock price")
+    change: float = Field(..., description="Price change from previous close")
+    change_percent: str = Field(..., description="Percentage change")
+    volume: int = Field(..., description="Trading volume")
+    previous_close: float = Field(..., description="Previous closing price")
+    open_price: float = Field(..., description="Opening price")
+    high: float = Field(..., description="Day's high price")
+    low: float = Field(..., description="Day's low price")
+    latest_trading_day: str = Field(..., description="Latest trading day")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class HistoricalData(BaseModel):
+    """Historical price data."""
+    symbol: str = Field(..., description="Stock symbol")
+    interval: str = Field(..., description="Time interval (daily, weekly, monthly)")
+    prices: List[Dict[str, Any]] = Field(default_factory=list, description="Historical price data points")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="API metadata")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class FinancialStatement(BaseModel):
+    """Financial statement data (income, balance sheet, cash flow)."""
+    symbol: str = Field(..., description="Stock symbol")
+    statement_type: str = Field(..., description="Type of statement (income, balance, cash)")
+    annual_reports: List[Dict[str, Any]] = Field(default_factory=list, description="Annual financial reports")
+    quarterly_reports: List[Dict[str, Any]] = Field(default_factory=list, description="Quarterly financial reports")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class TechnicalIndicators(BaseModel):
+    """Technical indicator data."""
+    symbol: str = Field(..., description="Stock symbol")
+    indicator: str = Field(..., description="Indicator type (SMA, EMA, RSI, etc.)")
+    interval: str = Field(..., description="Time interval")
+    time_period: int = Field(..., description="Time period for calculation")
+    data: Dict[str, Any] = Field(default_factory=dict, description="Indicator data points")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="API metadata")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class MarketData(BaseModel):
+    """General market data and indices."""
+    market_name: str = Field(..., description="Market or index name")
+    current_value: float = Field(..., description="Current market value")
+    change: float = Field(..., description="Change from previous close")
+    change_percent: str = Field(..., description="Percentage change")
+    timestamp: datetime = Field(default_factory=datetime.now)
+
+
+class FinancialDataResponse(BaseModel):
+    """Comprehensive financial data response."""
+    symbol: str = Field(..., description="Stock symbol")
+    quote: Optional[StockQuote] = None
+    historical_data: Optional[HistoricalData] = None
+    financial_statements: List[FinancialStatement] = Field(default_factory=list)
+    technical_indicators: List[TechnicalIndicators] = Field(default_factory=list)
+    market_data: Optional[MarketData] = None
+    success: bool = Field(default=True, description="Whether data retrieval was successful")
+    error_message: Optional[str] = None
+    timestamp: datetime = Field(default_factory=datetime.now)

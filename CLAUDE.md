@@ -15,6 +15,9 @@ pip install -r requirements-dev.txt
 export OPENROUTER_API_KEY="your-openrouter-api-key"
 export OPENAI_API_KEY="your-openai-api-key"  # fallback
 
+# Optional: For real-time financial data features
+export ALPHA_VANTAGE_API_KEY="your-alpha-vantage-api-key"  # Get free key at https://www.alphavantage.co/support/#api-key
+
 # Optional: Setup Logfire for LLM tracing and observability
 logfire auth
 logfire projects use <your-project-name>
@@ -113,6 +116,10 @@ streamlit run streamlit_app.py
 - `web_scraper.py`: BeautifulSoup content extraction
 - `vector_search.py`: ChromaDB vector database search
 - `calculator.py`: Financial calculations and metrics
+- `financial_data.py`: Alpha Vantage API integration for real-time market data
+  - Real-time stock quotes with price, volume, and change data
+  - Historical price analysis for trend identification
+  - Financial statement data for fundamental analysis
 
 **Models** (`models/`): Clean Pydantic data models
 - `schemas.py`: All structured data models for the system
@@ -135,6 +142,9 @@ streamlit run streamlit_app.py
 - **BeautifulSoup Scraping**: Intelligent content extraction from web pages
 - **ChromaDB Vector Search**: Semantic search through investment documents
 - **Financial Calculations**: Automated ratio and metric calculations
+- **Real-Time Market Data**: Live stock quotes and financial data via Alpha Vantage
+- **Historical Analysis**: Price trend analysis for technical insights
+- **Fundamental Data**: Direct access to financial statements and metrics
 - **Rich Output**: Formatted analysis with structured insights
 
 ### Dependencies

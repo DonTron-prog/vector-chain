@@ -47,3 +47,4 @@ DEFAULT_MODEL = 'gpt-4o-mini'
 SEARXNG_URL = "http://localhost:8080"
 CHROMA_PATH = "./investment_chroma_db"
 KNOWLEDGE_PATH = "./knowledge_base"
+ALPHA_VANTAGE_URL = "https://www.alphavantage.co/query"

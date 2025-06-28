@@ -2,7 +2,10 @@
 
 from typing import Dict, List, Any, Optional
 import re
+import os
+import asyncio
 from models.schemas import FinancialMetrics
+from tools.financial_data import get_real_time_quote, get_financial_fundamentals
 
 
 def parse_financial_value(value_str: str) -> Optional[float]:
@@ -225,3 +228,176 @@ def perform_financial_calculations(
         results.append("Unable to calculate requested metrics from provided data.")
     
     return "\n".join(results)
+
+
+async def calculate_live_metrics(symbol: str) -> str:
+    """Calculate financial metrics using live market data.
+    
+    Args:
+        symbol: Stock symbol (e.g., 'AAPL', 'MSFT')
+        
+    Returns:
+        Formatted string with live financial metrics
+    """
+    api_key = os.getenv("ALPHA_VANTAGE_API_KEY")
+    if not api_key:
+        return "Error: ALPHA_VANTAGE_API_KEY environment variable not set"
+    
+    try:
+        # Get real-time quote and fundamentals
+        quote_task = asyncio.create_task(get_real_time_quote(symbol))
+        fundamentals_task = asyncio.create_task(get_financial_fundamentals(symbol))
+        
+        quote_result, fundamentals_result = await asyncio.gather(
+            quote_task, fundamentals_task, return_exceptions=True
+        )
+        
+        if isinstance(quote_result, Exception):
+            return f"Error getting quote for {symbol}: {str(quote_result)}"
+        
+        if isinstance(fundamentals_result, Exception):
+            return f"Error getting fundamentals for {symbol}: {str(fundamentals_result)}"
+        
+        # Extract current price from quote
+        price_line = [line for line in quote_result.split('\n') if 'Price:' in line]
+        current_price = None
+        if price_line:
+            price_str = price_line[0].split('$')[1].split()[0]
+            current_price = float(price_str)
+        
+        # Extract EPS from fundamentals
+        eps_line = [line for line in fundamentals_result.split('\n') if 'Reported EPS:' in line]
+        eps = None
+        if eps_line:
+            eps_str = eps_line[0].split('$')[1]
+            try:
+                eps = float(eps_str)
+            except ValueError:
+                eps = None
+        
+        # Calculate live P/E ratio
+        results = [f"Live Financial Metrics for {symbol}:"]
+        results.append(f"Current Price: ${current_price:.2f}" if current_price else "Current Price: N/A")
+        
+        if current_price and eps and eps != 0:
+            pe_ratio = current_price / eps
+            results.append(f"Live P/E Ratio: {pe_ratio:.2f}")
+        else:
+            results.append("Live P/E Ratio: N/A (insufficient data)")
+        
+        results.append("\n--- Real-time Quote ---")
+        results.append(quote_result)
+        
+        results.append("\n--- Financial Fundamentals ---")
+        results.append(fundamentals_result)
+        
+        return "\n".join(results)
+        
+    except Exception as e:
+        return f"Error calculating live metrics for {symbol}: {str(e)}"
+
+
+def calculate_valuation_metrics(
+    current_price: float,
+    eps: float,
+    book_value_per_share: float,
+    free_cash_flow_per_share: float,
+    revenue_growth_rate: float,
+    industry_avg_pe: float = 20.0
+) -> str:
+    """Calculate comprehensive valuation metrics.
+    
+    Args:
+        current_price: Current stock price
+        eps: Earnings per share
+        book_value_per_share: Book value per share
+        free_cash_flow_per_share: Free cash flow per share
+        revenue_growth_rate: Revenue growth rate (as decimal)
+        industry_avg_pe: Industry average P/E ratio
+        
+    Returns:
+        Formatted string with valuation analysis
+    """
+    results = ["Valuation Analysis:"]
+    
+    # P/E Ratio Analysis
+    if eps and eps != 0:
+        pe_ratio = current_price / eps
+        results.append(f"P/E Ratio: {pe_ratio:.2f}")
+        
+        premium_discount = ((pe_ratio - industry_avg_pe) / industry_avg_pe) * 100
+        if premium_discount > 0:
+            results.append(f"Trading at {premium_discount:.1f}% premium to industry average ({industry_avg_pe:.1f})")
+        else:
+            results.append(f"Trading at {abs(premium_discount):.1f}% discount to industry average ({industry_avg_pe:.1f})")
+    
+    # Price-to-Book Ratio
+    if book_value_per_share and book_value_per_share != 0:
+        pb_ratio = current_price / book_value_per_share
+        results.append(f"Price-to-Book Ratio: {pb_ratio:.2f}")
+        
+        if pb_ratio < 1:
+            results.append("• Trading below book value (potentially undervalued)")
+        elif pb_ratio > 3:
+            results.append("• Trading at high premium to book value")
+    
+    # Price-to-Free Cash Flow
+    if free_cash_flow_per_share and free_cash_flow_per_share != 0:
+        pfcf_ratio = current_price / free_cash_flow_per_share
+        results.append(f"Price-to-Free Cash Flow: {pfcf_ratio:.2f}")
+    
+    # PEG Ratio (Price/Earnings to Growth)
+    if eps and eps != 0 and revenue_growth_rate > 0:
+        pe_ratio = current_price / eps
+        growth_rate_percent = revenue_growth_rate * 100
+        peg_ratio = pe_ratio / growth_rate_percent
+        results.append(f"PEG Ratio: {peg_ratio:.2f}")
+        
+        if peg_ratio < 1:
+            results.append("• PEG < 1 suggests potentially undervalued relative to growth")
+        elif peg_ratio > 1.5:
+            results.append("• PEG > 1.5 suggests potentially overvalued relative to growth")
+    
+    # Valuation Summary
+    results.append("\nValuation Summary:")
+    if eps and eps != 0:
+        pe_ratio = current_price / eps
+        if pe_ratio < 15:
+            results.append("• Low P/E suggests value opportunity or declining business")
+        elif pe_ratio > 25:
+            results.append("• High P/E suggests growth expectations or overvaluation")
+        else:
+            results.append("• Moderate P/E suggests fair valuation")
+    
+    return "\n".join(results)
+
+
+async def comprehensive_financial_analysis(symbol: str) -> str:
+    """Perform comprehensive financial analysis combining live data and calculations.
+    
+    Args:
+        symbol: Stock symbol to analyze
+        
+    Returns:
+        Complete financial analysis report
+    """
+    try:
+        # Get live metrics first
+        live_metrics = await calculate_live_metrics(symbol)
+        
+        # Parse some values for additional calculations
+        results = [f"=== Comprehensive Financial Analysis for {symbol} ===\n"]
+        results.append(live_metrics)
+        
+        # Add investment considerations
+        results.append("\n=== Investment Considerations ===")
+        results.append("• Review quarterly earnings trends for consistency")
+        results.append("• Compare metrics to industry peers and sector averages")
+        results.append("• Consider macroeconomic factors affecting the sector")
+        results.append("• Evaluate management guidance and forward-looking statements")
+        results.append("• Assess competitive position and market share trends")
+        
+        return "\n".join(results)
+        
+    except Exception as e:
+        return f"Error in comprehensive analysis for {symbol}: {str(e)}"
