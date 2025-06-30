@@ -12,6 +12,14 @@ from tools.vector_search import search_internal_docs as _search_internal_docs, f
 from tools.web_search import search_web as _search_web, format_search_results  
 from tools.web_scraper import scrape_webpage as _scrape_webpage
 from tools.calculator import perform_financial_calculations
+from tools.alpha_vantage import (
+    get_quote as _get_quote,
+    get_company_overview as _get_company_overview,
+    get_earnings as _get_earnings,
+    format_quote_results,
+    format_company_overview,
+    format_earnings_results
+)
 
 
 research_agent = Agent(
@@ -26,6 +34,9 @@ Use available tools to gather information and build a complete investment analys
 - search_web: Search current market news, trends, and analysis 
 - scrape_webpage: Extract detailed content from specific web pages
 - calculate_financial_metrics: Calculate financial ratios and metrics
+- get_stock_quote: Get real-time stock price and trading data
+- get_company_fundamentals: Get comprehensive company overview with valuation metrics
+- get_earnings_history: Get quarterly and annual earnings data with surprises
 
 RESEARCH APPROACH:
 1. Start by understanding the investment query and research plan
@@ -157,6 +168,48 @@ async def calculate_financial_metrics(
         metrics: List of metrics to calculate (pe_ratio, debt_ratio, roe, profit_margin, etc.)
     """
     return perform_financial_calculations(financial_data, metrics)
+
+
+@research_agent.tool
+async def get_stock_quote(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Get real-time stock quote with price, volume, and trading data.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL')
+    """
+    quote_data = await _get_quote(symbol)
+    return format_quote_results(quote_data)
+
+
+@research_agent.tool
+async def get_company_fundamentals(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Get comprehensive company overview with financial metrics and valuation.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL')
+    """
+    overview_data = await _get_company_overview(symbol)
+    return format_company_overview(overview_data)
+
+
+@research_agent.tool
+async def get_earnings_history(
+    ctx: RunContext[ResearchDependencies],
+    symbol: str
+) -> str:
+    """Get quarterly and annual earnings history with analyst estimates.
+    
+    Args:
+        symbol: Stock ticker symbol (e.g., 'AAPL')
+    """
+    earnings_data = await _get_earnings(symbol)
+    return format_earnings_results(earnings_data)
 
 
 async def conduct_research(

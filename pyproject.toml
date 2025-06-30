@@ -10,7 +10,7 @@ packages = [{include = "agents"}, {include = "tools"}, {include = "models"}]
 python = "^3.11"
 instructor = "^1.6.1"
 pydantic = ">=2.10.3,<3.0.0" 
-pydantic-ai = {version = "^0.0.14", extras = ["logfire"]}
+pydantic-ai = {version = "^0.0.14", extras = ["logfire", "tavily"]}
 aiohttp = "^3.9.0"
 sympy = "^1.13.3"
 python-dotenv = ">=1.0.1,<2.0.0"
@@ -23,6 +23,7 @@ chromadb = "^0.4.0"
 numpy = ">=1.24.0,<2.0.0"
 streamlit = "^1.28.0"
 pandas = "^2.0.0"
+pymupdf = "^1.23.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"

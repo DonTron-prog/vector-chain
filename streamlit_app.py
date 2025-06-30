@@ -59,7 +59,43 @@ st.markdown("""
         color: #dc3545;
         font-weight: bold;
     }
+    .developer-banner {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .developer-banner h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .developer-banner p {
+        margin: 0.5rem 0 0 0;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    .developer-banner a {
+        color: #ffd700;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .developer-banner a:hover {
+        text-decoration: underline;
+    }
 </style>
+""", unsafe_allow_html=True)
+
+# Developer Banner
+st.markdown("""
+<div class="developer-banner">
+    <h3>👨‍💻 Donald McGillivray</h3>
+    <p>📧 <a href="mailto:mcgillivray.d@gmail.com">mcgillivray.d@gmail.com</a> | 🌐 <a href="https://donaldmcgillivray.com" target="_blank">donaldmcgillivray.com</a>
+    | 💼 <a href="https://www.linkedin.com/in/donald-mcgillivray" target="_blank">LinkedIn</a> | 🦋 <a href="https://donaldmcgillivray.bsky.social" target="_blank">Bluesky</a></p>
+</div>
 """, unsafe_allow_html=True)
 
 # Initialize session state
